@@ -1,0 +1,3000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AyHungry CRM — Gestión Comercial SEO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+:root{
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#252836;--bg4:#2f3347;
+  --accent:#6c63ff;--accent2:#8b83ff;--green:#22c55e;--red:#ef4444;
+  --yellow:#eab308;--blue:#3b82f6;--orange:#f97316;--pink:#ec4899;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --border:#2f3347;--radius:10px;--shadow:0 4px 20px rgba(0,0,0,.4);
+}
+/* LAYOUT */
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+#main{flex:1;overflow-y:auto;background:var(--bg)}
+.logo{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+.logo h2{font-size:18px;font-weight:700;color:var(--accent2)}
+.logo span{font-size:11px;color:var(--text3);display:block;margin-top:2px}
+nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--text2);transition:.15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg3);color:var(--accent2);border-left-color:var(--accent)}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.nav-section{padding:14px 16px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.page{padding:24px;max-width:1400px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.page-title{font-size:22px;font-weight:700}
+.page-subtitle{font-size:13px;color:var(--text3);margin-top:2px}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;border:none;cursor:pointer;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg4)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{filter:brightness(1.1)}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{filter:brightness(1.1)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.card-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media(max-width:1100px){.grid-5{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr}}
+/* STAT CARD */
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
+.stat-card .sc-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.stat-card .sc-value{font-size:26px;font-weight:700;line-height:1}
+.stat-card .sc-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.stat-card .sc-accent{position:absolute;right:14px;top:14px;font-size:22px;opacity:.3}
+/* ALERT SYSTEM */
+.alerts-panel{margin-bottom:20px}
+.alert-group{margin-bottom:10px}
+.alert-group-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.alert-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:5px;display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer;transition:.15s}
+.alert-item:hover{background:var(--bg3)}
+.alert-badge{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.p1 .alert-badge{background:var(--red)}
+.p2 .alert-badge{background:var(--orange)}
+.p3 .alert-badge{background:var(--yellow)}
+.p4 .alert-badge{background:var(--blue)}
+.p1 .alert-group-title{color:var(--red)}
+.p2 .alert-group-title{color:var(--orange)}
+.p3 .alert-group-title{color:var(--yellow)}
+.p4 .alert-group-title{color:var(--blue)}
+/* PIPELINE */
+.pipeline-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.pipeline-scroll::-webkit-scrollbar{height:5px}
+.pipeline-scroll::-webkit-scrollbar-track{background:var(--bg2)}
+.pipeline-scroll::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.pipe-col{min-width:200px;width:200px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);display:flex;flex-direction:column}
+.pipe-header{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.pipe-header h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.pipe-count{font-size:11px;background:var(--bg4);padding:2px 8px;border-radius:20px;color:var(--text2)}
+.pipe-cards{padding:8px;flex:1;min-height:80px}
+.kanban-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:.15s;position:relative}
+.kanban-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.kanban-card .kc-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.kanban-card .kc-meta{font-size:11px;color:var(--text2)}
+.kanban-card .kc-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.kanban-card .kc-alert{position:absolute;top:6px;right:6px;font-size:10px}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
+.badge-yellow{background:rgba(234,179,8,.15);color:var(--yellow)}
+.badge-blue{background:rgba(59,130,246,.15);color:var(--blue)}
+.badge-orange{background:rgba(249,115,22,.15);color:var(--orange)}
+.badge-purple{background:rgba(108,99,255,.15);color:var(--accent2)}
+.badge-gray{background:rgba(100,116,139,.15);color:var(--text3)}
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr:last-child td{border-bottom:none}
+.td-name{font-weight:600;cursor:pointer;color:var(--accent2)}.td-name:hover{text-decoration:underline}
+/* FORMS */
+.form-group{margin-bottom:14px}
+label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;transition:.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);background:var(--bg4)}
+textarea{resize:vertical;min-height:70px}
+select option{background:var(--bg3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.checkbox-group{display:flex;gap:14px;flex-wrap:wrap}
+.checkbox-item{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px}
+.checkbox-item input{width:auto}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:860px;margin:auto}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:17px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+.modal-body{padding:20px 24px}
+.modal-footer{padding:14px 24px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tab{padding:9px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+/* STATUS INDICATORS */
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.status-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.status-box label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+.status-indicator{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}
+.dot-yellow{background:var(--yellow)}
+.dot-red{background:var(--red)}
+.dot-gray{background:var(--text3)}
+.dot-blue{background:var(--blue)}
+/* QUICK PASTE */
+.qp-area{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.qp-area textarea{background:var(--bg4);min-height:120px}
+.qp-result{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.qp-field{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:12px}
+.qp-field .qf-label{color:var(--text3);min-width:130px;padding-top:1px}
+.qp-field .qf-value{color:var(--text);font-weight:500}
+.qp-field .qf-value.found{color:var(--green)}
+.qp-field .qf-value.notfound{color:var(--text3);font-style:italic}
+/* HISTORIAL */
+.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px}
+.hist-icon{font-size:18px;flex-shrink:0;width:28px;text-align:center;padding-top:1px}
+.hist-content{flex:1}
+.hist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hist-title{font-size:13px;font-weight:600}
+.hist-date{font-size:11px;color:var(--text3)}
+.hist-body{font-size:12px;color:var(--text2)}
+.hist-client{font-size:11px;color:var(--accent2);cursor:pointer;margin-top:2px}
+/* MODULE TAGS */
+.mod-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600}
+.mod1{background:rgba(59,130,246,.15);color:var(--blue)}
+.mod2{background:rgba(236,72,153,.15);color:var(--pink)}
+/* MONTO */
+.monto-display{font-size:15px;font-weight:700;color:var(--green)}
+.monto-alt{font-size:11px;color:var(--text3);margin-top:1px}
+/* REPORTS */
+.report-filter{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.filter-group{display:flex;flex-direction:column;gap:5px}
+.filter-group label{font-size:11px;color:var(--text2)}
+.filter-group input,.filter-group select{width:auto;min-width:140px}
+/* SOP */
+.sop-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.sop-title{font-size:15px;font-weight:700;margin-bottom:10px;color:var(--accent2)}
+.sop-step{display:flex;gap:10px;margin-bottom:8px;font-size:13px}
+.sop-num{width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+/* SEARCH */
+.search-bar{display:flex;gap:10px;align-items:center;flex:1;min-width:200px}
+.search-bar input{flex:1}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state .es-icon{font-size:40px;margin-bottom:12px}
+.empty-state h3{font-size:16px;margin-bottom:6px;color:var(--text2)}
+/* TOOLTIPS */
+[title]{cursor:help}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+/* TAGS IN KANBAN */
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600}
+/* DRAG & DROP */
+.kanban-card[draggable]{cursor:grab}
+.kanban-card.dragging{opacity:.4;transform:rotate(2deg)}
+.pipe-cards.drag-over{background:rgba(108,99,255,.08);border:2px dashed var(--accent);border-radius:8px}
+/* PRIORITY */
+.prio-alta{color:var(--red)}.prio-media{color:var(--yellow)}.prio-baja{color:var(--green)}
+/* REVENUE SUMMARY */
+.rev-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center}
+.rev-box .rv-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.rev-box .rv-clp{font-size:18px;font-weight:700;color:var(--green)}
+.rev-box .rv-uf{font-size:11px;color:var(--text2);margin-top:2px}
+/* COLLAPSIBLE ALERTS */
+.alert-toggle{background:none;border:none;color:inherit;font-size:11px;cursor:pointer;padding:0;text-decoration:underline;opacity:.7}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <div class="logo">
+      <h2>🍽️ AyHungry</h2>
+    </div>
+    <nav id="nav"></nav>
+  </div>
+  <div id="main">
+    <div id="view-root"></div>
+  </div>
+</div>
+
+<!-- MODAL FICHA -->
+<div id="modal-ficha" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-title">Ficha Cliente</h3>
+        <div id="modal-sub" style="font-size:12px;color:var(--text3);margin-top:3px"></div>
+      </div>
+      <button class="modal-close" onclick="closeFicha()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs" id="ficha-tabs">
+        <div class="tab active" onclick="switchTab(0)" data-tab="0">📋 Info General</div>
+        <div class="tab" onclick="switchTab(1)" data-tab="1">🗺️ Ficha Google</div>
+        <div class="tab" onclick="switchTab(2)" data-tab="2">⏱️ Prueba / Pago</div>
+        <div class="tab" onclick="switchTab(3)" data-tab="3">🧾 Facturación</div>
+        <div class="tab" onclick="switchTab(4)" data-tab="4">📞 Historial</div>
+      </div>
+      <div id="tab-0" class="tab-panel active"></div>
+      <div id="tab-1" class="tab-panel"></div>
+      <div id="tab-2" class="tab-panel"></div>
+      <div id="tab-3" class="tab-panel"></div>
+      <div id="tab-4" class="tab-panel"></div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn btn-danger btn-sm" onclick="confirmDeleteCliente()">🗑️ Eliminar cliente</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary btn-sm" onclick="closeFicha()">Cerrar</button>
+        <button class="btn btn-primary btn-sm" onclick="saveCliente()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INTERACCION -->
+<div id="modal-inter" class="modal-overlay" style="display:none">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <h3 id="inter-modal-title">➕ Registrar Interacción</h3>
+      <button class="modal-close" onclick="closeInter()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="i-tipo" onchange="toggleReunionFields()">
+            <option value="llamada">📞 Llamada</option>
+            <option value="demo">🎯 Demo</option>
+            <option value="propuesta">📄 Propuesta Enviada</option>
+            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="email">✉️ Email</option>
+            <option value="reunion">📅 Reunión</option>
+            <option value="nota">📝 Nota interna</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha y hora</label>
+          <input type="datetime-local" id="i-fecha">
+        </div>
+      </div>
+      <!-- Campos extra para reunión -->
+      <div id="reunion-fields" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:8px">📅 Detalles de Reunión</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Título de la reunión</label>
+            <input type="text" id="i-reunion-titulo" placeholder="Ej: Demo AyHungry — El Mesón">
+          </div>
+          <div class="form-group">
+            <label>Duración (minutos)</label>
+            <select id="i-reunion-duracion">
+              <option value="30">30 min</option>
+              <option value="60" selected>1 hora</option>
+              <option value="90">1.5 horas</option>
+              <option value="120">2 horas</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Lugar / Link videollamada</label>
+          <input type="text" id="i-reunion-lugar" placeholder="Ej: Meet, Zoom, dirección física...">
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="abrirGoogleCalendar()" style="margin-top:4px">
+          📅 Agregar a Google Calendar
+        </button>
+      </div>
+      <div class="form-group">
+        <label>Descripción / Notas</label>
+        <textarea id="i-nota" rows="3" placeholder="Qué se habló, compromisos, próximos pasos..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tarea de seguimiento (opcional)</label>
+          <input type="text" id="i-tarea" placeholder="Ej: Enviar propuesta el lunes">
+        </div>
+        <div class="form-group">
+          <label>Fecha tarea</label>
+          <input type="date" id="i-tarea-fecha">
+        </div>
+      </div>
+      <!-- Adjuntar archivo -->
+      <div class="form-group">
+        <label>Adjuntar archivo (PDF, Excel, imagen, etc.)</label>
+        <input type="file" id="i-archivo" accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg,.txt"
+          onchange="previewArchivo(this)"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px;font-size:12px;cursor:pointer">
+        <div id="i-archivo-preview" style="display:none;margin-top:6px;font-size:12px;background:var(--bg3);padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:8px">
+          <span id="i-archivo-nombre" style="color:var(--accent2)"></span>
+          <span id="i-archivo-size" style="color:var(--text3)"></span>
+          <button class="btn btn-xs btn-danger" onclick="clearArchivo()" style="margin-left:auto">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeInter()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveInteraccion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO CLIENTE RAPIDO -->
+<div id="modal-nuevo" class="modal-overlay" style="display:none">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h3>➕ Nuevo Cliente</h3>
+      <button class="modal-close" onclick="document.getElementById('modal-nuevo').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nombre del restaurante *</label><input type="text" id="nc-nombre" placeholder="El Mesón Chileno"></div>
+        <div class="form-group"><label>Contacto</label><input type="text" id="nc-contacto" placeholder="Nombre del dueño/encargado"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="nc-tel" placeholder="+56 9 1234 5678"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="nc-email" placeholder="correo@restaurante.cl"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Estado inicial</label>
+          <select id="nc-estado">
+            <option value="nuevo_lead">Nuevo Lead</option>
+            <option value="contactado">Contactado</option>
+            <option value="acuerdo_alcanzado">Acuerdo Alcanzado</option>
+            <option value="periodo_prueba">Período de Prueba</option>
+            <option value="pago_directo">Pago Directo</option>
+            <option value="validacion_bot">Validación Técnica</option>
+            <option value="en_proceso_pago">En Proceso de Pago</option>
+            <option value="cliente_activo">Cliente Activo</option>
+            <option value="perdido">Perdido</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Canal de origen</label>
+          <select id="nc-canal" onchange="toggleCanalDetalle('nc')">
+            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="email">✉️ Email</option>
+            <option value="referido">👥 Referido</option>
+            <option value="cold_call">📞 Cold Call</option>
+            <option value="instagram">📸 Instagram</option>
+            <option value="otro">🔗 Otro (especificar)</option>
+          </select>
+          <input type="text" id="nc-canal-detalle" placeholder="¿Cuál? Ej: LinkedIn, feria, boca a boca..." style="margin-top:6px;display:none">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Módulos contratados</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" id="nc-mod1" value="modulo1"> <span class="mod-tag mod1">Módulo 1 — Reservas y Operación</span></label>
+          <label class="checkbox-item"><input type="checkbox" id="nc-mod2" value="modulo2"> <span class="mod-tag mod2">Módulo 2 — Reseñas y Reputación</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notas iniciales</label>
+        <textarea id="nc-notas" rows="3" placeholder="Cualquier info relevante..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('modal-nuevo').style.display='none'">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNuevoCliente()">Crear Cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS & CONFIG
+// ═══════════════════════════════════════════════════════════
+const UF_RATE = 38500; // ~CLP por UF
+const STORAGE_KEY = 'ayhungry_seo_crm_v3';
+
+// ═══════════════════════════════════════════════════════════
+// BACKUP LAYER — IndexedDB (redundante) + File System API
+// ═══════════════════════════════════════════════════════════
+const IDB_NAME = 'AyHungryCRM_v1';
+const IDB_SNAPSHOTS = 'snapshots';
+const IDB_META = 'meta';
+const IDB_DIR_KEY = 'backupDirHandle';
+let _idb = null;
+let _backupDirHandle = null;
+let _lastFileBackup = null;
+let _fileBackupTimer = null;
+
+function openIDB(){
+  return new Promise((resolve,reject)=>{
+    if(_idb){resolve(_idb);return;}
+    const req = indexedDB.open(IDB_NAME,1);
+    req.onupgradeneeded = e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(IDB_SNAPSHOTS)) db.createObjectStore(IDB_SNAPSHOTS,{keyPath:'ts'});
+      if(!db.objectStoreNames.contains(IDB_META)) db.createObjectStore(IDB_META);
+    };
+    req.onsuccess = e=>{ _idb=e.target.result; resolve(_idb); };
+    req.onerror = ()=>reject(req.error);
+  });
+}
+
+async function saveToIDB(json){
+  try{
+    const db=await openIDB();
+    const tx=db.transaction(IDB_SNAPSHOTS,'readwrite');
+    const store=tx.objectStore(IDB_SNAPSHOTS);
+    store.put({ts:Date.now(),data:json});
+    store.getAll().onsuccess=e=>{
+      const all=e.target.result||[];
+      if(all.length>50) all.sort((a,b)=>a.ts-b.ts).slice(0,all.length-50).forEach(item=>store.delete(item.ts));
+    };
+  }catch(e){console.warn('IDB save error',e);}
+}
+
+async function loadLatestFromIDB(){
+  try{
+    const db=await openIDB();
+    return new Promise(resolve=>{
+      const tx=db.transaction(IDB_SNAPSHOTS,'readonly');
+      tx.objectStore(IDB_SNAPSHOTS).getAll().onsuccess=e=>{
+        const all=e.target.result||[];
+        if(!all.length){resolve(null);return;}
+        all.sort((a,b)=>b.ts-a.ts);
+        resolve(all[0].data);
+      };
+    });
+  }catch(e){console.warn('IDB load error',e);return null;}
+}
+
+async function saveDirHandleToIDB(handle){
+  try{
+    const db=await openIDB();
+    const tx=db.transaction(IDB_META,'readwrite');
+    tx.objectStore(IDB_META).put(handle,IDB_DIR_KEY);
+  }catch(e){console.warn('IDB dirHandle save error',e);}
+}
+
+async function loadDirHandleFromIDB(){
+  try{
+    const db=await openIDB();
+    return new Promise(resolve=>{
+      const tx=db.transaction(IDB_META,'readonly');
+      const req=tx.objectStore(IDB_META).get(IDB_DIR_KEY);
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>resolve(null);
+    });
+  }catch(e){return null;}
+}
+
+async function setupAutoBackup(){
+  if(!window.showDirectoryPicker){
+    showToast('⚠️ Tu versión de Chrome no soporta backup automático a carpeta','error');
+    return;
+  }
+  try{
+    const dirHandle=await window.showDirectoryPicker({id:'ayhungry-backup',mode:'readwrite',startIn:'documents'});
+    _backupDirHandle=dirHandle;
+    await saveDirHandleToIDB(dirHandle);
+    await writeFileBackup();
+    showToast('✅ Backup automático configurado — se guarda en cada cambio');
+    updateBackupStatus();
+  }catch(e){
+    if(e.name!=='AbortError') showToast('No se pudo configurar: '+e.message,'error');
+  }
+}
+
+async function writeFileBackup(){
+  if(!_backupDirHandle) return;
+  try{
+    const perm=await _backupDirHandle.requestPermission({mode:'readwrite'});
+    if(perm!=='granted'){_backupDirHandle=null;updateBackupStatus();return;}
+    // Nunca guardar si DB está vacío (protege contra sobrescribir con estado malo)
+    if(!DB.clientes || DB.clientes.length === 0){
+      console.warn('writeFileBackup abortado — DB sin clientes');
+      return;
+    }
+    // Proteger contra sobrescribir con un dataset que tenga >30% menos clientes
+    if(!window._lastSafeClientCount) window._lastSafeClientCount = DB.clientes.length;
+    const minSafe = Math.max(5, Math.floor(window._lastSafeClientCount * 0.7));
+    if(DB.clientes.length < minSafe){
+      console.warn('writeFileBackup abortado — DB tiene ' + DB.clientes.length + ' clientes, mínimo seguro: ' + minSafe);
+      return;
+    }
+    window._lastSafeClientCount = DB.clientes.length;
+    const json=JSON.stringify(DB);
+    // Archivo principal para recuperación automática (el agente programado lo usa)
+    const ch=await _backupDirHandle.getFileHandle('crm_data.json',{create:true});
+    const cw=await ch.createWritable(); await cw.write(json); await cw.close();
+    // Archivo latest (siempre sobreescribe)
+    const lh=await _backupDirHandle.getFileHandle('AyHungry_CRM_latest.json',{create:true});
+    const lw=await lh.createWritable(); await lw.write(json); await lw.close();
+    // Archivo diario (un archivo por día)
+    const today=new Date().toISOString().slice(0,10);
+    const dh=await _backupDirHandle.getFileHandle(`AyHungry_CRM_${today}.json`,{create:true});
+    const dw=await dh.createWritable(); await dw.write(json); await dw.close();
+    _lastFileBackup=new Date();
+    updateBackupStatus();
+  }catch(e){
+    console.warn('File backup error',e);
+    if(e.name==='NotAllowedError'){_backupDirHandle=null;updateBackupStatus();}
+  }
+}
+
+function scheduleFileBackup(){
+  clearTimeout(_fileBackupTimer);
+  _fileBackupTimer=setTimeout(()=>writeFileBackup(),2000);
+}
+
+function updateBackupStatus(){
+  const el=document.getElementById('backupAutoStatus');
+  if(!el) return;
+  if(_backupDirHandle){
+    const t=_lastFileBackup?_lastFileBackup.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}):'ahora';
+    el.innerHTML=`<span style="color:var(--green)">✅ Activo — último guardado: ${t}</span>
+      <button class="btn" style="margin-left:12px;padding:4px 10px;font-size:12px;background:var(--bg3);color:var(--text2);border:1px solid var(--border)" onclick="setupAutoBackup()">Cambiar carpeta</button>`;
+  }else if(window._needsFileReconnect){
+    el.innerHTML=`<span style="color:var(--yellow)">⚠️ Hay backup en carpeta — </span>
+      <button class="btn" style="background:#f97316;color:#fff;padding:4px 12px;font-size:12px;border:none;cursor:pointer" onclick="reconnectFromFile()">Reconectar y restaurar</button>`;
+  }else{
+    el.innerHTML=`<span style="color:var(--yellow)">⚠️ Sin carpeta configurada — tus datos solo están en el navegador</span>
+      <button class="btn btn-primary" style="margin-left:12px;padding:4px 10px;font-size:12px" onclick="setupAutoBackup()">Configurar carpeta</button>`;
+  }
+}
+
+async function initBackupSystem(){
+  const handle=await loadDirHandleFromIDB();
+  if(handle){_backupDirHandle=handle;scheduleFileBackup();}
+  updateBackupStatus();
+}
+
+async function reconnectFromFile(){
+  try{
+    const handle=_backupDirHandle||await loadDirHandleFromIDB();
+    if(!handle){ showToast('No hay carpeta configurada','error'); return; }
+    const perm=await handle.requestPermission({mode:'readwrite'});
+    if(perm!=='granted'){ showToast('Permiso denegado','error'); return; }
+    _backupDirHandle=handle;
+    const fh=await handle.getFileHandle('AyHungry_CRM_latest.json').catch(()=>null);
+    if(!fh){ showToast('Archivo JSON no encontrado en la carpeta','error'); return; }
+    const txt=await (await fh.getFile()).text();
+    const parsed=JSON.parse(txt);
+    if(!parsed.clientes||parsed.clientes.length===0){ showToast('Archivo JSON vacío','error'); return; }
+    DB=Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'},parsed);
+    saveDB();
+    const banner=document.getElementById('reconnect-banner');
+    if(banner) banner.remove();
+    buildNav(); showView(DB.lastView||'dashboard');
+    showToast('✅ '+DB.clientes.length+' clientes restaurados desde JSON');
+  }catch(e){ showToast('Error al leer JSON: '+e.message,'error'); }
+}
+
+function showReconnectBanner(){
+  if(document.getElementById('reconnect-banner')) return;
+  const bar=document.createElement('div');
+  bar.id='reconnect-banner';
+  bar.style='position:fixed;top:0;left:0;right:0;background:#f97316;color:#fff;padding:10px 20px;z-index:9999;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600';
+  bar.innerHTML='⚠️ Hay un backup en carpeta — <button onclick="reconnectFromFile()" style="background:#fff;color:#f97316;border:none;border-radius:4px;padding:4px 12px;cursor:pointer;font-weight:700">Restaurar ahora</button> <span style="font-weight:400">(Un click para cargar tus últimos datos)</span>';
+  document.body.prepend(bar);
+}
+
+const PIPELINE = [
+  {id:'nuevo_lead',       label:'Nuevo Lead',         color:'#6c63ff'},
+  {id:'contactado',       label:'Contactado',          color:'#3b82f6'},
+  {id:'acuerdo_alcanzado',label:'Acuerdo Alcanzado',   color:'#06b6d4'},
+  {id:'periodo_prueba',   label:'Período de Prueba',   color:'#f97316'},
+  {id:'pago_directo',     label:'Pago Directo',        color:'#eab308'},
+  {id:'validacion_bot',   label:'Validación Técnica',      color:'#a855f7'},
+  {id:'en_proceso_pago',  label:'En Proceso de Pago',  color:'#ec4899'},
+  {id:'cliente_activo',   label:'Cliente Activo',      color:'#22c55e'},
+  {id:'perdido',          label:'Perdido',             color:'#ef4444'},
+];
+
+const PIPELINE_C = {};
+PIPELINE.forEach(p => PIPELINE_C[p.id] = p.color);
+
+const CANAL_LABELS = {whatsapp:'💬 WhatsApp',email:'✉️ Email',referido:'👥 Referido',cold_call:'📞 Cold Call',instagram:'📸 Instagram',otro:'🔗 Otro (especificar)'};
+const TIPO_LABELS  = {llamada:'📞 Llamada',whatsapp:'💬 WhatsApp',email:'✉️ Email',reunion:'📅 Reunión',demo:'🎯 Demo',propuesta:'📄 Propuesta Enviada',nota:'📝 Nota'};
+const PRIO_LABELS  = {alta:'🔴 Alta',media:'🟡 Media',baja:'🟢 Baja'};
+
+const BOTON_RESERVA_STATUS = {
+  correcto:  {label:'Correcto',  dot:'dot-green',  icon:'✅'},
+  no_match:  {label:'No Match',  dot:'dot-red',    icon:'❌'},
+  pendiente: {label:'Pendiente', dot:'dot-yellow', icon:'⏳'},
+};
+const FICHA_MATCH_STATUS = {
+  correcto:  {label:'Correcto',  dot:'dot-green', icon:'✅'},
+  no_match:  {label:'No Match',  dot:'dot-red',   icon:'❌'},
+  pendiente: {label:'Pendiente', dot:'dot-yellow',icon:'⏳'},
+};
+
+const NAV_ITEMS = [
+  {id:'mi_dia',    icon:'☀️', label:'Mi Día'},
+  {id:'dashboard', icon:'📊', label:'Dashboard'},
+  {id:'kanban',    icon:'📋', label:'Pipeline Kanban'},
+  {id:'clientes',  icon:'👥', label:'Clientes'},
+  {id:'historial', icon:'📞', label:'Historial'},
+  {id:'tareas',    icon:'✅', label:'Tareas'},
+  {id:'sep'},
+  {id:'quickpaste',icon:'⚡', label:'Ingreso Rápido'},
+  {id:'sep'},
+  {id:'reportes',  icon:'📈', label:'Reportes'},
+  {id:'reporte_semanal', icon:'📋', label:'Reporte Semanal'},
+  {id:'sep'},
+  {id:'datos',     icon:'💾', label:'Datos / Backup'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════════════════════════
+let DB = {clientes:[], interacciones:[], nextId:1, nextIId:1, lastView:'dashboard'};
+
+function saveDB(){
+  try{
+    DB.lastView = currentView||'dashboard';
+    const json = JSON.stringify(DB);
+    localStorage.setItem(STORAGE_KEY, json); // siempre primero localStorage
+    try{ saveToIDB(json); }catch(e){} // backup IDB — error silencioso, no rompe nada
+    try{ if(_backupDirHandle) scheduleFileBackup(); }catch(e){} // backup archivo — error silencioso
+  }catch(e){
+    console.error('[saveDB] Error al guardar:', new Date().toISOString(), e);
+    const isQuota = e.name === 'QuotaExceededError' || (e.message && e.message.toLowerCase().includes('quota'));
+    if(isQuota){
+      // Mostrar banner persistente de almacenamiento lleno
+      let banner = document.getElementById('quota-banner');
+      if(!banner){
+        banner = document.createElement('div');
+        banner.id = 'quota-banner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ef4444;color:#fff;padding:12px 20px;z-index:10000;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.4)';
+        banner.innerHTML = '⚠️ Error al guardar: almacenamiento lleno. Exporta tus datos ahora. <button onclick="exportarDatos()" style="background:#fff;color:#ef4444;border:none;border-radius:4px;padding:4px 12px;cursor:pointer;font-weight:700;margin-left:8px">Exportar ahora</button><button onclick="this.parentElement.remove()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:4px 10px;cursor:pointer;margin-left:4px">✕</button>';
+        document.body.prepend(banner);
+      }
+      // Intentar guardar en IDB como fallback
+      try{ const json = JSON.stringify(DB); saveToIDB(json); }catch(idbErr){ console.error('[saveDB] IDB fallback también falló:', idbErr); }
+    } else {
+      showToast('⚠️ Error al guardar datos: ' + e.message, 'error');
+    }
+  }
+}
+
+// Guarda antes de cerrar/refresh (beforeunload)
+window.addEventListener('beforeunload', ()=>{ saveDB(); });
+
+// ── Drag & Drop Kanban ──────────────────────────────────────────
+let draggedClienteId = null;
+function dragStart(e, id){
+  draggedClienteId = id;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function dragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  // Remove drag-over from all columns
+  document.querySelectorAll('.pipe-cards').forEach(el=>el.classList.remove('drag-over'));
+}
+function dragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e){
+  // Only remove if leaving the column (not entering a child)
+  if(!e.currentTarget.contains(e.relatedTarget)){
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+function dropCard(e, nuevoEstado){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(!draggedClienteId) return;
+  const c = DB.clientes.find(x=>x.id===draggedClienteId);
+  if(c && c.estado !== nuevoEstado){
+    if(nuevoEstado==='validacion_bot' && (!c.modulos || c.modulos.length===0)){
+      showToast('⚠️ Validación Técnica requiere al menos un módulo activo','error');
+      draggedClienteId = null;
+      return;
+    }
+    c.estado = nuevoEstado;
+    saveDB();
+    const label = PIPELINE.find(p=>p.id===nuevoEstado)?.label || nuevoEstado;
+    showToast(`✅ Movido a ${label}`);
+    showView('kanban');
+  }
+  draggedClienteId = null;
+}
+
+// Auto-save cada 30 segundos como red de seguridad
+setInterval(()=>{ saveDB(); }, 30000);
+
+// Default client template
+function newCliente(overrides={}){
+  return Object.assign({
+    id: DB.nextId++,
+    nombre:'', contacto:'', tel:'', email:'',
+    estado:'nuevo_lead', prioridad:'media',
+    canal:'whatsapp', canalDetalle:'',
+    modulos:[], // ['modulo1','modulo2']
+    // Locales / Sucursales
+    cantidadLocales: 1,
+    locales: [{nombre:'', botonReserva:'pendiente', fichaMatch:'pendiente'}],
+    fichaGoogleNota:'',
+    // Prueba / Pago
+    iniciTipo:'prueba',
+    pruebaInicio:'', pruebaFin:'', pruebaResultado:'',
+    // Facturación
+    rut:'', direccionFiscal:'', correoFiscal:'',
+    nombreFiscal:'', contactoCierre:'',
+    // Monto
+    monedaTipo:'CLP', monto:'',
+    metodoPago:'transferencia', diaPago:'',
+    pagoEstado:'pendiente',
+    proxima:'', fechaProx:'', fechaIni:'',
+    notas:'', googleUsers:'', enRiesgo:'', createdAt: new Date().toISOString()
+  }, overrides);
+}
+
+// Helper: clientes activos (excluye soft-deleted)
+function activeClientes(){ return DB.clientes.filter(c=>!c.deleted); }
+
+// Currency helpers
+function toCLP(c){ return c.monedaTipo==='UF' ? (parseFloat(c.monto)||0)*UF_RATE : (parseFloat(c.monto)||0); }
+function toUF(c){  return c.monedaTipo==='CLP' ? (parseFloat(c.monto)||0)/UF_RATE : (parseFloat(c.monto)||0); }
+function fmtCLP(n){ return 'CLP '+Math.round(n).toLocaleString('es-CL'); }
+function fmtUF(n){  return 'UF '+n.toFixed(2); }
+function fmtMonto(c){
+  if(!c.monto) return '—';
+  if(c.monedaTipo==='CLP') return fmtCLP(parseFloat(c.monto)||0);
+  return fmtUF(parseFloat(c.monto)||0);
+}
+function fmtMontoAlt(c){
+  if(!c.monto) return '';
+  if(c.monedaTipo==='CLP') return '≈ '+fmtUF(toUF(c));
+  return '≈ '+fmtCLP(toCLP(c));
+}
+
+// Date helpers
+function today(){ return new Date().toISOString().split('T')[0]; }
+function diffDays(a,b){
+  const d1=new Date(a), d2=new Date(b||today());
+  return Math.round((d2-d1)/(1000*60*60*24));
+}
+function fmtDate(d){ if(!d) return '—'; const p=d.split('T')[0]; const [y,m,dd]=p.split('-'); return `${dd}/${m}/${y}`; }
+function fmtDatetime(d){ if(!d) return '—'; const dt=new Date(d); return dt.toLocaleDateString('es-CL')+' '+dt.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}); }
+function isOverdue(d){ return d && d < today(); }
+
+// ═══════════════════════════════════════════════════════════
+// ALERT ENGINE
+// ═══════════════════════════════════════════════════════════
+function buildAlerts(){
+  const alerts = {p1:[],p2:[],p3:[],p4:[]};
+  const t = today();
+
+  // FIX 8: Índice O(n) — construir Map de última interacción y tareas vencidas por cliente
+  const lastInteraccionMap = new Map();
+  const tareasVencidasMap  = new Map();
+  DB.interacciones.forEach(i=>{
+    const prev = lastInteraccionMap.get(i.clienteId);
+    if(!prev || i.fecha > prev.fecha) lastInteraccionMap.set(i.clienteId, i);
+    if(i.tareaFecha && isOverdue(i.tareaFecha) && !i.tareaCompletada){
+      if(!tareasVencidasMap.has(i.clienteId)) tareasVencidasMap.set(i.clienteId, []);
+      tareasVencidasMap.get(i.clienteId).push(i);
+    }
+  });
+
+  activeClientes().forEach(c=>{
+    if(c.estado==='perdido') return;
+    const lastContact = lastInteraccionMap.get(c.id);
+    const diasSinContacto = lastContact ? diffDays(lastContact.fecha.split('T')[0], t) : (c.createdAt ? diffDays(c.createdAt.split('T')[0], t) : 999);
+    const pruebaFin = c.pruebaFin;
+    const diasHastaPrueba = pruebaFin ? diffDays(t, pruebaFin) : null;
+
+    // P1: Critical — revisar cada local
+    const locs = ensureLocales(c);
+    const noMatchFicha = locs.filter(l=>l.fichaMatch==='no_match');
+    if(noMatchFicha.length>0){
+      const labels = noMatchFicha.map((l,i)=>l.nombre||`Local ${locs.indexOf(l)+1}`).join(', ');
+      alerts.p1.push({id:c.id, text:`${c.nombre} — Ficha Google sin match: ${labels}`, icon:'❌'});
+    }
+    if(pruebaFin && isOverdue(pruebaFin) && c.estado==='periodo_prueba'){
+      alerts.p1.push({id:c.id, text:`${c.nombre} — Prueba vencida (${fmtDate(pruebaFin)})`, icon:'⏰'});
+    }
+    if(diasHastaPrueba===0 && c.estado==='periodo_prueba'){
+      alerts.p1.push({id:c.id, text:`${c.nombre} — Prueba VENCE HOY`, icon:'🚨'});
+    }
+
+    // P2: Urgent
+    if(diasSinContacto>=10 && ['contactado','acuerdo_alcanzado','periodo_prueba','pago_directo'].includes(c.estado)){
+      alerts.p2.push({id:c.id, text:`${c.nombre} — Sin contacto hace ${diasSinContacto} días`, icon:'📵'});
+    }
+    const noMatchBoton = locs.filter(l=>l.botonReserva==='no_match');
+    if(c.modulos.includes('modulo1') && noMatchBoton.length>0 && c.estado==='cliente_activo'){
+      const labels = noMatchBoton.map(l=>l.nombre||`Local ${locs.indexOf(l)+1}`).join(', ');
+      alerts.p2.push({id:c.id, text:`${c.nombre} — Botón Reservar Mesa sin match: ${labels}`, icon:'📍'});
+    }
+    // Tareas vencidas (usando índice pre-construido)
+    (tareasVencidasMap.get(c.id)||[]).forEach(i=>{
+      alerts.p2.push({id:c.id, text:`${c.nombre} — Tarea vencida: ${i.tarea||'sin título'}`, icon:'✅'});
+    });
+
+    // P3: Important
+    if(c.estado==='cliente_activo' && (!c.rut || !c.nombreFiscal)){
+      alerts.p3.push({id:c.id, text:`${c.nombre} — Facturación incompleta`, icon:'🧾'});
+    }
+    if(diasHastaPrueba!==null && diasHastaPrueba>=1 && diasHastaPrueba<=7 && c.estado==='periodo_prueba'){
+      alerts.p3.push({id:c.id, text:`${c.nombre} — Prueba vence en ${diasHastaPrueba} días (${fmtDate(pruebaFin)})`, icon:'⏳'});
+    }
+
+    // P3+: Datos incompletos en clientes activos
+    if(['cliente_activo','pago_directo'].includes(c.estado)){
+      const faltantes = [];
+      if(!c.rut)     faltantes.push('RUT');
+      if(!c.monto)   faltantes.push('monto');
+      if(!c.fechaIni) faltantes.push('fecha de inicio');
+      if(faltantes.length > 0){
+        alerts.p3.push({id:c.id, text:`${c.nombre} — Datos incompletos: ${faltantes.join(', ')}`, icon:'📋'});
+      }
+    }
+
+    // P4: Info
+    if(diasSinContacto>=1 && diasSinContacto<3 && c.estado==='nuevo_lead'){
+      alerts.p4.push({id:c.id, text:`${c.nombre} — Lead nuevo sin contacto en ${diasSinContacto}d`, icon:'💤'});
+    }
+    if(c.estado==='cliente_activo' && diasSinContacto>=14){
+      alerts.p4.push({id:c.id, text:`${c.nombre} — Cliente sin check-in hace ${diasSinContacto} días`, icon:'👋'});
+    }
+  });
+
+  return alerts;
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════
+let currentView = 'dashboard';
+
+function buildNav(){
+  const nav = document.getElementById('nav');
+  const clientesActivosIds = new Set(activeClientes().map(c=>c.id));
+  const tareasPendientes = DB.interacciones.filter(i=>i.tarea&&!i.tareaCompletada&&clientesActivosIds.has(i.clienteId)).length;
+  const tareasVencidas   = DB.interacciones.filter(i=>i.tarea&&!i.tareaCompletada&&i.tareaFecha&&isOverdue(i.tareaFecha)&&clientesActivosIds.has(i.clienteId)).length;
+  nav.innerHTML = NAV_ITEMS.map(n=>{
+    if(n.id==='sep') return '<div style="height:1px;background:var(--border);margin:6px 0"></div>';
+    let badge = '';
+    if(n.id==='tareas' && tareasPendientes>0){
+      const color = tareasVencidas>0 ? 'var(--red)' : 'var(--yellow)';
+      badge = `<span style="background:${color};color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:auto;font-weight:700">${tareasPendientes}</span>`;
+    }
+    return `<div class="nav-item ${n.id===currentView?'active':''}" onclick="showView('${n.id}')" style="justify-content:flex-start">
+      <span class="icon">${n.icon}</span><span style="flex:1">${n.label}</span>${badge}
+    </div>`;
+  }).join('');
+}
+
+function showView(v){
+  currentView = v;
+  buildNav();
+  const root = document.getElementById('view-root');
+  switch(v){
+    case 'mi_dia':     root.innerHTML = renderMiDia(); break;
+    case 'dashboard':  root.innerHTML = renderDashboard(); break;
+    case 'kanban':     root.innerHTML = renderKanban(); break;
+    case 'clientes':   root.innerHTML = renderClientes(); break;
+    case 'historial':  root.innerHTML = renderHistorial(); break;
+    case 'tareas':     root.innerHTML = renderTareas(); break;
+    case 'quickpaste': root.innerHTML = renderQuickPaste(); break;
+    case 'reportes':   root.innerHTML = renderReportes(); break;
+    case 'reporte_semanal': root.innerHTML = renderReporteSemanal(); break;
+    case 'sop':        root.innerHTML = renderSOP(); break;
+    case 'datos':      root.innerHTML = renderDatos(); break;
+    default:           root.innerHTML = '<div class="page"><p>Vista no encontrada</p></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MI DÍA
+// ═══════════════════════════════════════════════════════════
+function renderMiDia(){
+  const t = today();
+  const alerts = buildAlerts();
+  const totalAlerts = alerts.p1.length + alerts.p2.length + alerts.p3.length + alerts.p4.length;
+
+  // Seguimientos vencidos o para hoy
+  const seguimientos = activeClientes().filter(c=>{
+    return c.fechaProx && c.fechaProx.split('T')[0] <= t && c.estado !== 'perdido';
+  }).sort((a,b)=>a.fechaProx.localeCompare(b.fechaProx));
+
+  // Últimas 3 interacciones
+  const ultimasInter = [...DB.interacciones]
+    .sort((a,b)=>b.fecha.localeCompare(a.fecha))
+    .slice(0,3);
+
+  // Conteo por etapa (clientes activos)
+  const etapas = {};
+  PIPELINE.forEach(p=>{ etapas[p.id] = {label:p.label, color:p.color, count:0}; });
+  activeClientes().forEach(c=>{ if(etapas[c.estado]) etapas[c.estado].count++; });
+
+  // ── Alertas críticas ──
+  let alertasHtml = '';
+  if(totalAlerts === 0){
+    alertasHtml = '<div style="color:var(--green);font-size:13px;padding:10px 0">✅ Sin alertas activas</div>';
+  } else {
+    const allAlerts = [
+      ...alerts.p1.map(a=>({...a,prio:'p1',icon:'🔴'})),
+      ...alerts.p2.map(a=>({...a,prio:'p2',icon:'🟠'})),
+      ...alerts.p3.map(a=>({...a,prio:'p3',icon:'🟡'})),
+    ].slice(0,8);
+    alertasHtml = allAlerts.map(a=>`
+      <div class="alert-item ${a.prio}" onclick="openFicha(${a.id})" style="margin-bottom:4px">
+        <div class="alert-badge"></div>
+        <span>${a.icon} ${a.text}</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--text3)">→</span>
+      </div>`).join('');
+  }
+
+  // ── Seguimientos hoy/vencidos ──
+  let seguHtml = seguimientos.length === 0
+    ? '<div style="color:var(--text3);font-size:13px;padding:8px 0">Sin seguimientos para hoy 👍</div>'
+    : seguimientos.map(c=>{
+        const vencido = c.fechaProx.split('T')[0] < t;
+        return `<div class="alert-item" onclick="openFicha(${c.id})" style="margin-bottom:4px;border-left:3px solid ${vencido?'var(--red)':'var(--accent)'}">
+          <span style="font-size:13px">${vencido?'⏰':'📅'}</span>
+          <span><strong>${esc(c.nombre)}</strong> — ${esc(c.proxima||'Seguimiento')}</span>
+          <span style="margin-left:auto;font-size:11px;color:var(--text3)">${fmtDate(c.fechaProx)}</span>
+        </div>`;
+      }).join('');
+
+  // ── Últimas interacciones ──
+  let interHtml = ultimasInter.length === 0
+    ? '<div style="color:var(--text3);font-size:13px;padding:8px 0">Sin interacciones registradas</div>'
+    : ultimasInter.map(i=>{
+        const c = DB.clientes.find(x=>x.id===i.clienteId);
+        return `<div style="padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="${c?'openFicha('+c.id+')':''}">
+          <span style="font-size:12px;color:var(--text3)">${fmtDatetime(i.fecha)}</span>
+          <div style="font-size:13px;margin-top:2px">${TIPO_LABELS[i.tipo]||i.tipo} — <strong>${esc(c?c.nombre:'?')}</strong>${i.nota?' — <span style="color:var(--text2)">'+esc(i.nota.slice(0,60))+'</span>':''}</div>
+        </div>`;
+      }).join('');
+
+  // ── Conteo por etapa ──
+  const etapaItems = PIPELINE.map(p=>{
+    const n = etapas[p.id]?.count||0;
+    if(n===0) return '';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+      <span style="font-size:12px;color:${p.color}">●</span>
+      <span style="flex:1;margin-left:8px;font-size:12px">${p.label}</span>
+      <span style="font-size:13px;font-weight:700">${n}</span>
+    </div>`;
+  }).join('');
+
+  const now = new Date();
+  const hora = now.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  const fecha = now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+
+  return `<div class="page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">☀️ Mi Día</div>
+        <div class="page-subtitle">${fecha} — ${hora}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <!-- Alertas activas -->
+      <div class="card">
+        <div class="card-title">🚨 Alertas (${totalAlerts})</div>
+        ${alertasHtml}
+        ${totalAlerts>8?`<div style="font-size:11px;color:var(--text3);margin-top:6px">+${totalAlerts-8} más — ver Dashboard</div>`:''}
+      </div>
+
+      <!-- Seguimientos hoy/vencidos -->
+      <div class="card">
+        <div class="card-title">📅 Seguimientos hoy / vencidos (${seguimientos.length})</div>
+        ${seguHtml}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+      <!-- Últimas interacciones -->
+      <div class="card">
+        <div class="card-title">📞 Últimas 3 interacciones</div>
+        ${interHtml}
+      </div>
+
+      <!-- Pipeline compacto -->
+      <div class="card">
+        <div class="card-title">📊 Clientes por etapa</div>
+        ${etapaItems||'<span style="color:var(--text3);font-size:13px">Sin datos</span>'}
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text2)">
+          Total activos: <strong>${activeClientes().filter(c=>c.estado!=='perdido').length}</strong>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard(){
+  const activos   = activeClientes().filter(c=>c.estado==='cliente_activo');
+  const prueba    = activeClientes().filter(c=>['periodo_prueba','pago_directo'].includes(c.estado));
+  const pipeline  = activeClientes().filter(c=>!['cliente_activo','perdido'].includes(c.estado));
+  const perdidos  = activeClientes().filter(c=>c.estado==='perdido');
+  const totalCLP  = activos.reduce((s,c)=>s+toCLP(c),0);
+  const totalUF   = activos.reduce((s,c)=>s+toUF(c),0);
+  const pipeCLP   = pipeline.reduce((s,c)=>s+toCLP(c),0);
+  const pipeUF    = pipeline.reduce((s,c)=>s+toUF(c),0);
+  const alerts    = buildAlerts();
+  const totalAlerts = alerts.p1.length+alerts.p2.length+alerts.p3.length+alerts.p4.length;
+
+  let alertsHTML = '';
+  if(totalAlerts===0){
+    alertsHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--green)">✅ Sin alertas activas — Todo bajo control</div>';
+  } else {
+    const groups = [
+      {key:'p1', label:'P1 CRÍTICO', count:alerts.p1.length},
+      {key:'p2', label:'P2 URGENTE', count:alerts.p2.length},
+      {key:'p3', label:'P3 IMPORTANTE', count:alerts.p3.length},
+      {key:'p4', label:'P4 INFO', count:alerts.p4.length},
+    ];
+    alertsHTML = '<div class="alerts-panel">' + groups.map(g=>{
+      if(!alerts[g.key].length) return '';
+      const items = alerts[g.key].map(a=>`
+        <div class="alert-item ${g.key}" onclick="openFicha(${a.id})">
+          <div class="alert-badge"></div>
+          <span style="font-size:14px">${a.icon}</span>
+          <span>${a.text}</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3)">→ Ver ficha</span>
+        </div>`).join('');
+      return `<div class="alert-group ${g.key}">
+        <div class="alert-group-title">${g.label} <span style="background:var(--bg3);padding:1px 7px;border-radius:10px;font-size:10px;opacity:.8">${g.count}</span></div>
+        ${items}
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // Pipeline distribution
+  const pipeBar = PIPELINE.filter(p=>p.id!=='perdido').map(p=>{
+    const count = DB.clientes.filter(c=>c.estado===p.id).length;
+    const pct = DB.clientes.length ? Math.round(count/DB.clientes.length*100) : 0;
+    if(!count) return '';
+    return `<div style="margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+        <span style="color:${p.color}">${p.label}</span><span style="color:var(--text3)">${count}</span>
+      </div>
+      <div style="background:var(--bg4);border-radius:3px;height:5px">
+        <div style="width:${pct}%;background:${p.color};height:5px;border-radius:3px"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">Dashboard</div><div class="page-subtitle">${new Date().toLocaleDateString('es-CL',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div></div>
+      <button class="btn btn-primary" onclick="document.getElementById('modal-nuevo').style.display='flex'">➕ Nuevo Cliente</button>
+    </div>
+
+    ${totalAlerts>0?`<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px">🔔 Alertas <span style="background:var(--red);color:#fff;padding:1px 7px;border-radius:10px;font-size:11px">${totalAlerts}</span></div>${alertsHTML}</div>`:''}
+
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="stat-card">
+        <div class="sc-label">Clientes Activos</div>
+        <div class="sc-value" style="color:var(--green)">${activos.length}</div>
+        <div class="sc-sub">Pagando mensualmente</div>
+        <div class="sc-accent">✅</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">En Prueba / Pago Directo</div>
+        <div class="sc-value" style="color:var(--yellow)">${prueba.length}</div>
+        <div class="sc-sub">Período de evaluación</div>
+        <div class="sc-accent">⏱️</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Pipeline Total</div>
+        <div class="sc-value" style="color:var(--blue)">${pipeline.length}</div>
+        <div class="sc-sub">Leads en proceso</div>
+        <div class="sc-accent">🔄</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Perdidos</div>
+        <div class="sc-value" style="color:var(--red)">${perdidos.length}</div>
+        <div class="sc-sub">Descartados</div>
+        <div class="sc-accent">❌</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">💰 Revenue Mensual Recurrente</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="rev-box">
+            <div class="rv-label">Total CLP</div>
+            <div class="rv-clp">${fmtCLP(totalCLP)}</div>
+            <div class="rv-uf">≈ ${fmtUF(totalUF)}</div>
+          </div>
+          <div class="rev-box">
+            <div class="rv-label">Total UF</div>
+            <div class="rv-clp" style="color:var(--blue)">${fmtUF(totalUF)}</div>
+            <div class="rv-uf">≈ ${fmtCLP(totalCLP)}</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text3)">Tasa de conversión: 1 UF = ${UF_RATE.toLocaleString('es-CL')} CLP</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Pipeline Potencial</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="rev-box">
+            <div class="rv-label">Potencial CLP</div>
+            <div class="rv-clp" style="color:var(--orange)">${fmtCLP(pipeCLP)}</div>
+            <div class="rv-uf">≈ ${fmtUF(pipeUF)}</div>
+          </div>
+          <div class="rev-box">
+            <div class="rv-label">Potencial UF</div>
+            <div class="rv-clp" style="color:var(--orange)">${fmtUF(pipeUF)}</div>
+            <div class="rv-uf">≈ ${fmtCLP(pipeCLP)}</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text3)">${pipeline.length} clientes con monto definido en pipeline</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📋 Distribución Pipeline</div>
+        ${pipeBar || '<div style="color:var(--text3);font-size:13px">Sin clientes registrados</div>'}
+      </div>
+      <div class="card">
+        <div class="card-title">🔔 Actividad Reciente</div>
+        ${DB.interacciones.slice(-6).reverse().map(i=>{
+          const c = DB.clientes.find(x=>x.id===i.clienteId);
+          return `<div style="display:flex;gap:8px;margin-bottom:8px;font-size:12px">
+            <span>${TIPO_LABELS[i.tipo]?.split(' ')[0]||'📝'}</span>
+            <div><div style="font-weight:600;cursor:pointer;color:var(--accent2)" onclick="openFicha(${i.clienteId})">${c?c.nombre:'?'}</div>
+            <div style="color:var(--text3)">${fmtDatetime(i.fecha)} — ${(i.nota||'').substring(0,60)}...</div></div>
+          </div>`;
+        }).join('') || '<div style="color:var(--text3);font-size:13px">Sin interacciones registradas</div>'}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// KANBAN
+// ═══════════════════════════════════════════════════════════
+function renderKanban(){
+  const stages = PIPELINE.map(p=>{
+    const clts = DB.clientes.filter(c=>c.estado===p.id);
+    const cards = clts.map(c=>{
+      const mods = c.modulos.map(m=>m==='modulo1'?'<span class="mod-tag mod1" style="font-size:9px">M1</span>':'<span class="mod-tag mod2" style="font-size:9px">M2</span>').join('');
+      const alerts = buildAlerts();
+      const hasAlert = [...alerts.p1,...alerts.p2].some(a=>a.id===c.id);
+      const nLoc = c.cantidadLocales||1;
+      return `<div class="kanban-card" draggable="true"
+        ondragstart="dragStart(event,${c.id})"
+        ondragend="dragEnd(event)"
+        onclick="openFicha(${c.id})">
+        ${hasAlert?'<div class="kc-alert">🔴</div>':''}
+        <div class="kc-name">${c.nombre}</div>
+        <div class="kc-meta">${c.contacto||'Sin contacto'}</div>
+        <div class="kc-tags" style="margin-top:5px">
+          ${mods}
+          ${nLoc>1?`<span class="tag" style="background:rgba(59,130,246,.1);color:var(--blue)">📍${nLoc}</span>`:''}
+          ${c.monto?`<span class="tag" style="background:rgba(34,197,94,.1);color:var(--green)">${fmtMonto(c)}</span>`:''}
+          ${c.prioridad==='alta'?'<span class="tag badge-red">Alta</span>':''}
+          ${['nuevo_lead','contactado','acuerdo_alcanzado','validacion_bot'].includes(c.estado)
+            ? (c.iniciTipo==='pago_directo'
+                ? '<span class="tag" style="background:rgba(234,179,8,.15);color:#ca8a04;font-size:9px">💳 Pago directo</span>'
+                : '<span class="tag" style="background:rgba(249,115,22,.12);color:#c2410c;font-size:9px">⏱️ Piloto</span>')
+            : ''}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:6px;font-size:10px">
+          <span title="Botón Reservar Mesa">${aggLocales(c,'botonReserva')}</span>
+          <span style="color:var(--text3)">|</span>
+          <span title="Ficha Match">${aggLocales(c,'fichaMatch')}</span>
+        </div>
+      </div>`;
+    }).join('') || '<div style="font-size:11px;color:var(--text3);padding:4px">Sin clientes</div>';
+    return `<div class="pipe-col">
+      <div class="pipe-header" style="border-top:3px solid ${p.color}">
+        <h4 style="color:${p.color}">${p.label}</h4>
+        <span class="pipe-count">${clts.length}</span>
+      </div>
+      <div class="pipe-cards" data-estado="${p.id}"
+        ondragover="dragOver(event)"
+        ondragleave="dragLeave(event)"
+        ondrop="dropCard(event,'${p.id}')">${cards}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">Pipeline Kanban</div><div class="page-subtitle">${DB.clientes.length} clientes totales</div></div>
+      <button class="btn btn-primary" onclick="document.getElementById('modal-nuevo').style.display='flex'">➕ Nuevo Cliente</button>
+    </div>
+    <div class="pipeline-scroll">${stages}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLIENTES TABLE
+// ═══════════════════════════════════════════════════════════
+function renderClientes(filter=''){
+  let clts = activeClientes();
+  if(filter) clts = clts.filter(c=>
+    c.nombre.toLowerCase().includes(filter.toLowerCase()) ||
+    (c.contacto||'').toLowerCase().includes(filter.toLowerCase()) ||
+    (c.email||'').toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const rows = clts.map(c=>{
+    const p    = PIPELINE.find(x=>x.id===c.estado)||{color:'#64748b',label:c.estado};
+    const mods = c.modulos.map(m=>m==='modulo1'?'<span class="mod-tag mod1">M1</span>':'<span class="mod-tag mod2">M2</span>').join(' ');
+    const nLoc = c.cantidadLocales||1;
+    return `<tr>
+      <td>
+        <span class="td-name" onclick="openFicha(${c.id})">${c.nombre}</span>
+        <div style="font-size:11px;color:var(--text3)">${c.contacto||''}</div>
+        ${nLoc>1?`<span class="badge badge-blue" style="margin-top:3px">📍 ${nLoc} locales</span>`:''}
+      </td>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color};margin-right:5px"></span>${p.label}</td>
+      <td>${mods||'—'}</td>
+      <td><div class="monto-display">${fmtMonto(c)}</div><div class="monto-alt">${fmtMontoAlt(c)}</div></td>
+      <td style="font-size:12px">${aggLocales(c,'botonReserva')}</td>
+      <td style="font-size:12px">${aggLocales(c,'fichaMatch')}</td>
+      <td style="color:var(--text2);font-size:12px">${c.tel||'—'}</td>
+      <td>
+        <button class="btn btn-secondary btn-xs" onclick="openFicha(${c.id})">Ver</button>
+        <button class="btn btn-secondary btn-xs" onclick="openInter(${c.id})" style="margin-left:4px">+Int</button>
+        <button class="btn btn-danger btn-xs" onclick="confirmDeleteCliente(${c.id})" style="margin-left:4px" title="Eliminar cliente">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">Clientes</div><div class="page-subtitle">${activeClientes().length} registros</div></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="search-bar" style="min-width:220px">
+          <input type="text" placeholder="🔍 Buscar cliente..." oninput="showView_clientes(this.value)" id="cli-search">
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('modal-nuevo').style.display='flex'">➕ Nuevo</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0">
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Restaurante</th><th>Estado</th><th>Módulos</th><th>Monto</th>
+            <th>Botón Reserva</th><th>Ficha Match</th><th>Teléfono</th><th>Acciones</th>
+          </tr></thead>
+          <tbody>${rows||`<tr><td colspan="8"><div class="empty-state"><div class="es-icon">👥</div><h3>Sin clientes</h3><p>Agrega tu primer cliente</p></div></td></tr>`}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function showView_clientes(filter){
+  document.getElementById('view-root').innerHTML = renderClientes(filter);
+  document.getElementById('cli-search').value = filter;
+  document.getElementById('cli-search').focus();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTORIAL GLOBAL
+// ═══════════════════════════════════════════════════════════
+function renderHistorial(){
+  const ints = [...DB.interacciones].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const items = ints.map(i=>{
+    const c = DB.clientes.find(x=>x.id===i.clienteId);
+    const tl = TIPO_LABELS[i.tipo]||i.tipo;
+    return `<div class="hist-item">
+      <div class="hist-icon">${tl.split(' ')[0]}</div>
+      <div class="hist-content">
+        <div class="hist-header">
+          <div class="hist-title">${tl.substring(tl.indexOf(' ')+1)}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="hist-date">${fmtDatetime(i.fecha)}</div>
+            <button class="btn btn-xs btn-secondary" onclick="editarTarea(${i.id})" title="Editar interacción" style="padding:1px 6px;font-size:11px">✏️</button>
+          </div>
+        </div>
+        ${i.nota?`<div class="hist-body">${i.nota}</div>`:''}
+        ${i.tarea?`<div style="margin-top:4px;font-size:11px;background:var(--bg3);padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">✅ ${i.tarea} ${i.tareaFecha?'— '+fmtDate(i.tareaFecha):''} ${i.tareaCompletada?'<span style="color:var(--green)">✓</span>':'<button class="btn btn-xs btn-success" onclick="completarTarea('+i.id+')" style="margin-left:4px">Completar</button>'}</div>`:''}
+        ${c?`<div class="hist-client" onclick="openFicha(${c.id})">→ ${c.nombre}</div>`:''}
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty-state"><div class="es-icon">📞</div><h3>Sin interacciones</h3><p>Las interacciones aparecerán aquí</p></div>';
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">Historial Global</div><div class="page-subtitle">${DB.interacciones.length} interacciones registradas</div></div>
+      <button class="btn btn-primary" onclick="openInter(null)">➕ Registrar Interacción</button>
+    </div>
+    ${items}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAREAS
+// ═══════════════════════════════════════════════════════════
+function renderTareas(){
+  const tareas = DB.interacciones
+    .filter(i=>i.tarea && !i.tareaCompletada)
+    .sort((a,b)=>(a.tareaFecha||'9999').localeCompare(b.tareaFecha||'9999'));
+
+  const rows = tareas.map(i=>{
+    const c = DB.clientes.find(x=>x.id===i.clienteId);
+    const overdue = i.tareaFecha && isOverdue(i.tareaFecha);
+    const calBtn = i.tareaFecha ? `<button class="btn btn-xs" onclick="abrirCalTarea(${i.id})"
+      style="background:#4285F4;color:#fff;margin-left:4px" title="Agregar a Google Calendar">📅</button>` : '';
+    return `<tr ${overdue?'style="background:rgba(239,68,68,.05)"':''}>
+      <td ${overdue?'style="color:var(--red)"':''}>${fmtDate(i.tareaFecha)||'Sin fecha'} ${overdue?'🔴':''}</td>
+      <td>${i.tarea}</td>
+      <td><span class="td-name" onclick="openFicha(${i.clienteId})">${c?c.nombre:'?'}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${(i.nota||'').substring(0,50)}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-secondary btn-xs" onclick="editarTarea(${i.id})">✏️</button>
+        <button class="btn btn-success btn-xs" onclick="completarTarea(${i.id})" style="margin-left:4px">✓</button>
+        ${calBtn}
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">Tareas Pendientes</div><div class="page-subtitle">${tareas.length} tareas activas</div></div>
+      <button class="btn btn-primary" onclick="abrirNuevaTareaRapida()">➕ Nueva Tarea</button>
+    </div>
+    <div class="card" style="padding:0">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fecha</th><th>Tarea</th><th>Cliente</th><th>Contexto</th><th></th></tr></thead>
+          <tbody>${rows||`<tr><td colspan="5"><div class="empty-state"><div class="es-icon">✅</div><h3>Sin tareas pendientes</h3></div></td></tr>`}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function abrirNuevaTareaRapida(){
+  openInter(null);
+  setTimeout(()=>{
+    const tipoEl = document.getElementById('i-tipo');
+    if(tipoEl){ tipoEl.value = 'nota'; toggleReunionFields(); }
+    const tareaEl = document.getElementById('i-tarea');
+    if(tareaEl){ tareaEl.focus(); }
+  }, 120);
+}
+
+function completarTarea(iid){
+  const inter = DB.interacciones.find(i=>i.id===iid);
+  if(inter){ inter.tareaCompletada=true; saveDB(); showView(currentView); }
+}
+
+function abrirCalTarea(iid){
+  const inter = DB.interacciones.find(i=>i.id===iid);
+  if(!inter||!inter.tareaFecha) return;
+  const c = DB.clientes.find(x=>x.id===inter.clienteId);
+  const nombre = c ? c.nombre : 'Cliente';
+  const titulo = encodeURIComponent(`📋 ${inter.tarea} — ${nombre}`);
+  const desc = encodeURIComponent(`Tarea CRM AyHungry\nCliente: ${nombre}\n${inter.nota||''}`);
+  // Fecha: YYYYMMDD (evento de día completo)
+  const fecha = inter.tareaFecha.replace(/-/g,'');
+  // Día siguiente para el fin del evento
+  const dt = new Date(inter.tareaFecha);
+  dt.setDate(dt.getDate()+1);
+  const fechaFin = dt.toISOString().slice(0,10).replace(/-/g,'');
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${fecha}/${fechaFin}&details=${desc}`;
+  window.open(url,'_blank');
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUICK PASTE
+// ═══════════════════════════════════════════════════════════
+function renderQuickPaste(){
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">⚡ Ingreso Rápido</div><div class="page-subtitle">Pega texto libre (WhatsApp, email, etc.) y detectamos los campos automáticamente</div></div>
+    </div>
+    <div class="qp-area">
+      <label style="font-size:13px;font-weight:600;margin-bottom:8px;display:block">Pegar texto aquí:</label>
+      <textarea id="qp-input" rows="6" placeholder="Ejemplo:\nRestaurante El Mesón\nContacto: Carlos Pérez\nRUT: 76.543.210-3\nTel: +56 9 8765 4321\ncarloss@mesón.cl\nMonto: UF 2.5 mensual\nDirección: Av. Principal 123, Santiago"></textarea>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="parsePaste()">🔍 Analizar Texto</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('qp-input').value=''">Limpiar</button>
+      </div>
+    </div>
+    <div id="qp-result" style="display:none">
+      <div class="qp-result">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent2)">📋 Campos detectados:</div>
+        <div id="qp-fields"></div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:14px">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">¿En qué etapa del pipeline está este cliente?</div>
+          <select id="qp-estado" style="width:100%;margin-bottom:12px">
+            ${PIPELINE.map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}
+          </select>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="createFromPaste()">🃏 Generar Tarjeta de Cliente</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('qp-result').style.display='none'">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">💡 Qué detectamos automáticamente</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--text2)">
+        <div>✅ RUT chileno (XX.XXX.XXX-X)</div>
+        <div>✅ Email (@dominio.cl / .com)</div>
+        <div>✅ Teléfono (+56 9 XXXX XXXX)</div>
+        <div>✅ Monto en CLP ($ XX.XXX)</div>
+        <div>✅ Monto en UF (UF X.X)</div>
+        <div>✅ Nombre de restaurante</div>
+        <div>✅ Nombre de contacto</div>
+        <div>✅ Dirección (Av./Calle/Pasaje)</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+let parsedData = {};
+
+function parsePaste(){
+  const text = document.getElementById('qp-input').value;
+  if(!text.trim()) return;
+  parsedData = extractFields(text);
+  const fields = [
+    {k:'nombre',     label:'Restaurante'},
+    {k:'contacto',   label:'Contacto'},
+    {k:'rut',        label:'RUT'},
+    {k:'tel',        label:'Teléfono'},
+    {k:'email',      label:'Email'},
+    {k:'monto',      label:'Monto'},
+    {k:'monedaTipo', label:'Moneda'},
+    {k:'direccionFiscal', label:'Dirección'},
+    {k:'nombreFiscal', label:'Razón Social'},
+    {k:'correoFiscal', label:'Correo Fiscal'},
+  ];
+  const html = fields.map(f=>`
+    <div class="qp-field">
+      <span class="qf-label">${f.label}:</span>
+      <span class="qf-value ${parsedData[f.k]?'found':'notfound'}">${parsedData[f.k]||'No detectado'}</span>
+    </div>`).join('');
+  document.getElementById('qp-fields').innerHTML = html;
+  document.getElementById('qp-result').style.display = 'block';
+}
+
+function extractFields(text){
+  const d = {};
+  // RUT: XX.XXX.XXX-X or XXXXXXXX-X
+  const rutMatch = text.match(/\b(\d{1,2}\.?\d{3}\.?\d{3}-[\dkK])\b/i);
+  if(rutMatch) d.rut = formatRUT(rutMatch[1]);
+  // Email
+  const emailMatch = text.match(/[\w.+-]+@[\w-]+\.[a-z]{2,}/i);
+  if(emailMatch){ d.email = emailMatch[0]; d.correoFiscal = emailMatch[0]; }
+  // Phone: +56 9 or 09 or 569
+  const telMatch = text.match(/(\+56\s*9[\s\d]{8,}|0?9\d{8})/);
+  if(telMatch) d.tel = telMatch[0].trim();
+  // Monto UF first
+  const ufMatch = text.match(/UF\s*(\d+[\.,]?\d*)/i);
+  if(ufMatch){ d.monto = ufMatch[1].replace(',','.'); d.monedaTipo = 'UF'; }
+  // Monto CLP
+  if(!d.monto){
+    const clpMatch = text.match(/\$\s*([\d.,]+)|(\d[\d.,]+)\s*(pesos|clp)/i);
+    if(clpMatch){ d.monto = (clpMatch[1]||clpMatch[2]).replace(/\./g,'').replace(',','.'); d.monedaTipo = 'CLP'; }
+  }
+  // Dirección: Av., Calle, Pasaje, etc.
+  const dirMatch = text.match(/(Av\.?|Avenida|Calle|Pasaje|Blvd\.?|Ruta)[^\n,]{3,50}/i);
+  if(dirMatch) d.direccionFiscal = dirMatch[0].trim();
+  // Email lines with "correo" or "factura"
+  const correoMatch = text.match(/correo[^\n:]*:\s*([\w.+-]+@[\w-]+\.[a-z]{2,})/i);
+  if(correoMatch) d.correoFiscal = correoMatch[1];
+  // Nombre contacto: lines with "contacto:", "nombre:", "encargado:"
+  const contactoMatch = text.match(/(contacto|nombre|encargado|dueño|propietario)\s*[:\-]\s*([^\n,;]{3,40})/i);
+  if(contactoMatch) d.contacto = contactoMatch[2].trim();
+  // Razón social or empresa
+  const razonMatch = text.match(/(razón social|razón|empresa|sociedad)\s*[:\-]\s*([^\n]{3,60})/i);
+  if(razonMatch) d.nombreFiscal = razonMatch[2].trim();
+  // Restaurant name: first line or line with "restaurante"
+  const restMatch = text.match(/(restaurante|café|bar|bistro|parrilla|sushi|pizz|comer)[^\n]{2,50}/i);
+  if(restMatch) d.nombre = restMatch[0].replace(/restaurante\s*/i,'').trim();
+  if(!d.nombre){
+    const firstLine = text.split('\n')[0].trim();
+    if(firstLine && firstLine.length>2 && firstLine.length<60) d.nombre = firstLine;
+  }
+  return d;
+}
+
+function formatRUT(rut){
+  const clean = rut.replace(/[.\-]/g,'');
+  if(clean.length<2) return rut;
+  const body = clean.slice(0,-1);
+  const dv = clean.slice(-1);
+  const formatted = body.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  return formatted+'-'+dv;
+}
+
+function createFromPaste(){
+  const estadoSel = document.getElementById('qp-estado')?.value || 'nuevo_lead';
+  const c = newCliente(Object.assign({}, parsedData, {estado: estadoSel}));
+  DB.clientes.push(c);
+  saveDB();
+  document.getElementById('qp-result').style.display='none';
+  document.getElementById('qp-input').value='';
+  parsedData={};
+  openFicha(c.id);
+}
+
+// ═══════════════════════════════════════════════════════════
+// REPORTES
+// ═══════════════════════════════════════════════════════════
+function renderReportes(){
+  const d1 = document.getElementById('rep-d1')?.value || '';
+  const d2 = document.getElementById('rep-d2')?.value || '';
+  let clts = DB.clientes;
+  if(d1) clts = clts.filter(c=>(c.createdAt||'').split('T')[0]>=d1);
+  if(d2) clts = clts.filter(c=>(c.createdAt||'').split('T')[0]<=d2);
+
+  const activos = clts.filter(c=>c.estado==='cliente_activo');
+  const perdidos = clts.filter(c=>c.estado==='perdido');
+  const totalCLP = activos.reduce((s,c)=>s+toCLP(c),0);
+  const totalUF  = activos.reduce((s,c)=>s+toUF(c),0);
+
+  const porEstado = PIPELINE.map(p=>({
+    ...p, count: clts.filter(c=>c.estado===p.id).length
+  })).filter(p=>p.count>0);
+
+  const porModulo = [
+    {label:'Módulo 1 — Reservas', count: clts.filter(c=>c.modulos.includes('modulo1')).length, cls:'mod1'},
+    {label:'Módulo 2 — Reseñas',  count: clts.filter(c=>c.modulos.includes('modulo2')).length, cls:'mod2'},
+    {label:'Ambos módulos',       count: clts.filter(c=>c.modulos.includes('modulo1')&&c.modulos.includes('modulo2')).length, cls:'badge-purple'},
+  ];
+
+  // Contar por locales (modelo multi-local)
+  const botEstados = Object.entries(BOTON_RESERVA_STATUS).map(([k,v])=>({
+    ...v, key:k,
+    count: clts.reduce((s,c)=>s+(ensureLocales(c).filter(l=>l.botonReserva===k).length),0)
+  }));
+  const matchEstados = Object.entries(FICHA_MATCH_STATUS).map(([k,v])=>({
+    ...v, key:k,
+    count: clts.reduce((s,c)=>s+(ensureLocales(c).filter(l=>l.fichaMatch===k).length),0)
+  }));
+
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">📈 Reportes</div><div class="page-subtitle">Análisis comercial</div></div>
+    </div>
+    <div class="report-filter">
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" id="rep-d1" value="${d1}" onchange="refreshReportes()">
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" id="rep-d2" value="${d2}" onchange="refreshReportes()">
+      </div>
+      <div class="filter-group" style="justify-content:flex-end">
+        <label style="opacity:0">.</label>
+        <button class="btn btn-secondary btn-sm" onclick="clearRepFilter()">Limpiar filtro</button>
+      </div>
+      ${d1||d2?`<div style="align-self:flex-end;font-size:12px;color:var(--accent2)">Mostrando: ${clts.length} clientes en rango</div>`:''}
+    </div>
+
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="stat-card"><div class="sc-label">Total Clientes</div><div class="sc-value">${clts.length}</div><div class="sc-accent">👥</div></div>
+      <div class="stat-card"><div class="sc-label">Activos</div><div class="sc-value" style="color:var(--green)">${activos.length}</div><div class="sc-accent">✅</div></div>
+      <div class="stat-card"><div class="sc-label">MRR (CLP)</div><div class="sc-value" style="font-size:18px;color:var(--green)">${fmtCLP(totalCLP)}</div><div class="sc-sub">${fmtUF(totalUF)}</div><div class="sc-accent">💰</div></div>
+      <div class="stat-card"><div class="sc-label">Churn</div><div class="sc-value" style="color:var(--red)">${perdidos.length}</div><div class="sc-accent">📉</div></div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">🔄 Por Estado Pipeline</div>
+        ${porEstado.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>${p.label}</span>
+          <span style="font-weight:700">${p.count}</span>
+        </div>`).join('') || '<div style="color:var(--text3)">Sin datos</div>'}
+      </div>
+      <div class="card">
+        <div class="card-title">📦 Por Módulo</div>
+        ${porModulo.map(m=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px">
+          <span class="mod-tag ${m.cls}">${m.label}</span>
+          <span style="font-weight:700">${m.count}</span>
+        </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title">💰 Revenue por Módulo</div>
+        ${['modulo1','modulo2'].map(m=>{
+          const mc = activos.filter(c=>c.modulos.includes(m));
+          const mclp = mc.reduce((s,c)=>s+toCLP(c),0);
+          const muf  = mc.reduce((s,c)=>s+toUF(c),0);
+          return `<div style="margin-bottom:10px">
+            <div style="font-size:12px;margin-bottom:3px">${m==='modulo1'?'<span class="mod-tag mod1">M1 Reservas</span>':'<span class="mod-tag mod2">M2 Reseñas</span>'}</div>
+            <div style="font-size:14px;font-weight:700;color:var(--green)">${fmtCLP(mclp)}</div>
+            <div style="font-size:11px;color:var(--text3)">${fmtUF(muf)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🗺️ Botón Reservar Mesa</div>
+        ${botEstados.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px">
+          <span>${s.icon} ${s.label}</span><span style="font-weight:700">${s.count}</span>
+        </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title">✅ Ficha Google Match</div>
+        ${matchEstados.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px">
+          <span>${s.icon} ${s.label}</span><span style="font-weight:700">${s.count}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function refreshReportes(){
+  document.getElementById('view-root').innerHTML = renderReportes();
+}
+function clearRepFilter(){
+  document.getElementById('view-root').innerHTML = renderReportes();
+  setTimeout(()=>{
+    if(document.getElementById('rep-d1')) document.getElementById('rep-d1').value='';
+    if(document.getElementById('rep-d2')) document.getElementById('rep-d2').value='';
+  },50);
+  document.getElementById('view-root').innerHTML = renderReportes();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SOP
+// ═══════════════════════════════════════════════════════════
+function renderSOP(){
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">📖 SOP Comercial</div><div class="page-subtitle">Procedimientos y protocolos del equipo</div></div>
+    </div>
+    <div style="background:var(--bg2);border:2px dashed var(--border);border-radius:var(--radius);padding:60px 40px;text-align:center;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:16px">📝</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Sección en construcción</div>
+      <div style="font-size:13px;max-width:400px;margin:0 auto;line-height:1.6">
+        Acá irá el SOP comercial del equipo AyHungry.<br>
+        Procesos de venta, protocolos de atención y guías operativas.
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// REPORTE SEMANAL
+// ═══════════════════════════════════════════════════════════
+function renderReporteSemanal(){
+  const hoy = new Date();
+  // Próxima semana: lunes al domingo siguiente
+  const dow = hoy.getDay(); // 0=dom, 1=lun...
+  const diasHastaLunes = dow === 0 ? 1 : (8 - dow);
+  const lunesProx = new Date(hoy); lunesProx.setDate(hoy.getDate() + diasHastaLunes);
+  const domProx   = new Date(lunesProx); domProx.setDate(lunesProx.getDate() + 6);
+  // Esta semana
+  const lunesEsta = new Date(hoy); lunesEsta.setDate(hoy.getDate() - (dow === 0 ? 6 : dow - 1));
+  const domenEsta = new Date(lunesEsta); domenEsta.setDate(lunesEsta.getDate() + 6);
+
+  const toYMD = d => d.toISOString().slice(0,10);
+  const fmtShort = d => { const [y,m,day] = d.split('-'); return `${day}/${m}`; };
+
+  // ── 1. Reuniones próxima semana ───────────────────────────
+  const lunesStr = toYMD(lunesProx);
+  const domStr   = toYMD(domProx);
+  // From fechaProx field
+  const reunProxClients = DB.clientes.filter(c =>
+    c.fechaProx && c.fechaProx >= lunesStr && c.fechaProx <= domStr && c.estado !== 'perdido'
+  );
+  // From interactions of type "reunion" with future date
+  const reunProxInter = DB.interacciones.filter(i => {
+    if(i.tipo !== 'reunion') return false;
+    const fReu = (i.reunionFecha || i.fecha || '').slice(0,10);
+    return fReu >= lunesStr && fReu <= domStr;
+  });
+  const reunProxInterClients = reunProxInter.map(i => {
+    const c = DB.clientes.find(x => x.id === i.clienteId);
+    return c ? {nombre: c.nombre, fecha: (i.reunionFecha||i.fecha||'').slice(0,10), fuente:'inter'} : null;
+  }).filter(Boolean);
+  const reunAll = [
+    ...reunProxClients.map(c => ({nombre: c.nombre, fecha: c.fechaProx, fuente:'crm'})),
+    ...reunProxInterClients
+  ].filter((v,i,a) => a.findIndex(x=>x.nombre===v.nombre)===i);
+
+  // ── 2. Pilotos corriendo ───────────────────────────────────
+  const pilotos = DB.clientes.filter(c => c.estado === 'periodo_prueba');
+
+  // ── 3. Cierres semana (clientes activos creados esta semana) ─
+  const lunesEstaStr = toYMD(lunesEsta);
+  const domEstaStr   = toYMD(domenEsta);
+  const cierres = DB.clientes.filter(c =>
+    c.estado === 'cliente_activo' &&
+    c.createdAt && c.createdAt.slice(0,10) >= lunesEstaStr && c.createdAt.slice(0,10) <= domEstaStr
+  );
+
+  // ── 4. Actividad semana ───────────────────────────────────
+  const interSemana = DB.interacciones.filter(i => {
+    const fd = (i.fecha||'').slice(0,10);
+    return fd >= lunesEstaStr && fd <= domEstaStr;
+  });
+  const actCount = {};
+  interSemana.forEach(i => { actCount[i.tipo] = (actCount[i.tipo]||0) + 1; });
+
+  // ── 5. Riesgos ────────────────────────────────────────────
+  const enRiesgo = DB.clientes.filter(c => c.enRiesgo && c.enRiesgo.trim() && c.estado !== 'perdido');
+
+  // ── 6. Próximos cierres probables ─────────────────────────
+  const etapasCierre = ['acuerdo_alcanzado','periodo_prueba','pago_directo','validacion_bot','en_proceso_pago'];
+  const probables = DB.clientes.filter(c => etapasCierre.includes(c.estado));
+
+  // ── 7. Negocio en riesgo: no responde ─────────────────────
+  const noResponde = DB.clientes.filter(c => {
+    if(c.estado === 'perdido') return false;
+    if(c.enRiesgo && c.enRiesgo.toLowerCase().includes('no responde')) return true;
+    // También: en etapa avanzada y sin contacto en 14 días
+    const lastI = DB.interacciones.filter(i=>i.clienteId===c.id).sort((a,b)=>b.fecha.localeCompare(a.fecha))[0];
+    if(!lastI) return false;
+    const dias = Math.floor((hoy - new Date(lastI.fecha)) / 86400000);
+    return etapasCierre.includes(c.estado) && dias >= 14;
+  });
+
+  // ── Cálculo MRR ──────────────────────────────────────────
+  const UF_CLP = 38500; // valor referencial UF
+  function mrr(c){
+    if(!c.monto) return '';
+    const v = parseFloat(c.monto);
+    if(isNaN(v)) return '';
+    if(c.monedaTipo === 'UF') return `${c.monto} UF`;
+    return `$${Number(c.monto).toLocaleString('es-CL')} CLP`;
+  }
+
+  // ── Texto plano para copiar ───────────────────────────────
+  function generarTextoReporte(){
+    const semStr = `${fmtShort(lunesStr)} al ${fmtShort(domStr)}`;
+    let txt = `📊 REPORTE SEMANAL AYHUNGRY\n`;
+    txt += `Semana ${fmtShort(toYMD(lunesEsta))} al ${fmtShort(domEstaStr)} (generado ${hoy.toLocaleDateString('es-CL')})\n`;
+    txt += `${'─'.repeat(40)}\n\n`;
+
+    txt += `1️⃣  Reuniones próxima semana (${semStr}):\n`;
+    if(reunAll.length) reunAll.forEach(r => txt += `  - ${r.nombre}${r.fecha ? ' ('+fmtShort(r.fecha)+')' : ''}\n`);
+    else txt += `  Sin reuniones agendadas\n`;
+
+    txt += `\n2️⃣  Pilotos corriendo:\n`;
+    if(pilotos.length) pilotos.forEach(c => txt += `  - ${c.nombre}${c.pruebaInicio ? ' (inicio '+fmtShort(c.pruebaInicio)+')' : ''}\n`);
+    else txt += `  Sin pilotos activos\n`;
+
+    txt += `\n3️⃣  Cierres semana:\n`;
+    if(cierres.length) cierres.forEach(c => txt += `  - ${c.nombre}${mrr(c)?' – '+mrr(c)+' MRR':''}\n`);
+    else txt += `  Sin cierres registrados esta semana\n`;
+
+    txt += `\n4️⃣  Actividad:\n`;
+    const tipos = Object.entries(actCount);
+    if(tipos.length){
+      tipos.forEach(([t,n]) => txt += `  - ${n} ${TIPO_LABELS[t]||t}\n`);
+      txt += `  - ${interSemana.length} total interacciones\n`;
+    } else txt += `  Sin actividad registrada esta semana\n`;
+
+    txt += `\n5️⃣  Riesgos:\n`;
+    if(enRiesgo.length) enRiesgo.forEach(c => txt += `  - ${c.nombre}: ${c.enRiesgo}\n`);
+    else txt += `  Sin alertas de riesgo\n`;
+
+    txt += `\n6️⃣  Próximos cierres probables:\n`;
+    if(probables.length) probables.forEach(c => {
+      const etapa = PIPELINE.find(p=>p.id===c.estado);
+      txt += `  - ${c.nombre}${etapa?' ('+etapa.label+')':''}\n`;
+    });
+    else txt += `  Sin cierres probables identificados\n`;
+
+    txt += `\n7️⃣  Negocio en riesgo (no responde):\n`;
+    if(noResponde.length) noResponde.forEach(c => txt += `  - ${c.nombre}${c.enRiesgo ? ': '+c.enRiesgo : ''}\n`);
+    else txt += `  Sin clientes en riesgo por falta de contacto\n`;
+
+    return txt;
+  }
+
+  const semLabel = `${fmtShort(lunesStr)}-${fmtShort(domStr)}`;
+  const semActLabel = `${fmtShort(lunesEstaStr)}-${fmtShort(domEstaStr)}`;
+
+  function secBlock(num, emoji, title, items, emptyMsg){
+    const rows = items.length ? items.map(it => `
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--accent2);font-size:14px;margin-top:2px">•</span>
+        <div>${it}</div>
+      </div>`).join('') :
+      `<div style="color:var(--text3);font-size:13px;padding:8px 0">${emptyMsg}</div>`;
+    return `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <span style="background:var(--accent);color:#fff;border-radius:6px;padding:2px 8px;font-size:12px">${num}</span>
+          ${emoji} ${title}
+        </div>
+        ${rows}
+      </div>`;
+  }
+
+  const sec1 = secBlock('1','📅','Reuniones próxima semana <span style="font-size:11px;color:var(--text3)">('+semLabel+')</span>',
+    reunAll.map(r => `<b>${esc(r.nombre)}</b>${r.fecha ? ' <span style="color:var(--text3);font-size:12px">'+fmtShort(r.fecha)+'</span>' : ''}`),
+    'Sin reuniones agendadas — agrega una fecha en la ficha del cliente');
+
+  const sec2 = secBlock('2','🧪','Pilotos corriendo',
+    pilotos.map(c => `<b>${esc(c.nombre)}</b>${c.pruebaInicio ? ' <span style="color:var(--text3);font-size:12px">inicio '+fmtShort(c.pruebaInicio)+'</span>' : ''} <span style="color:var(--text3);font-size:12px">— ${esc(c.contacto||'')}</span>`),
+    'Sin pilotos en curso');
+
+  const sec3 = secBlock('3','🎉','Cierres semana <span style="font-size:11px;color:var(--text3)">('+semActLabel+')</span>',
+    cierres.map(c => `<b>${esc(c.nombre)}</b>${mrr(c) ? ' <span style="color:var(--green);font-weight:600">'+mrr(c)+' MRR</span>' : ''}`),
+    'Sin cierres esta semana — cuando muevas un cliente a "Cliente Activo" aparecerá aquí');
+
+  const actItems = Object.entries(actCount).map(([t,n]) =>
+    `<b>${n}</b> ${TIPO_LABELS[t]||t}`
+  );
+  if(interSemana.length) actItems.push(`<b>${interSemana.length}</b> total de interacciones`);
+  const sec4 = secBlock('4','⚡','Actividad <span style="font-size:11px;color:var(--text3)">('+semActLabel+')</span>',
+    actItems,
+    'Sin actividad registrada esta semana — registra llamadas, demos y reuniones en las fichas');
+
+  const sec5 = secBlock('5','⚠️','Riesgos',
+    enRiesgo.map(c => `<b>${esc(c.nombre)}</b> <span style="color:var(--yellow)">— ${esc(c.enRiesgo)}</span>`),
+    'Sin alertas de riesgo — puedes agregar una nota de riesgo en la ficha de cada cliente');
+
+  const sec6 = secBlock('6','🎯','Próximos cierres probables',
+    probables.map(c => {
+      const etapa = PIPELINE.find(p=>p.id===c.estado);
+      return `<b>${esc(c.nombre)}</b> <span style="color:${etapa?.color||'var(--text3)'};font-size:12px">${etapa?.label||c.estado}</span>`;
+    }),
+    'Sin cierres probables identificados');
+
+  const sec7 = secBlock('7','🚨','Negocio en riesgo: no responde contactos',
+    noResponde.map(c => `<b>${esc(c.nombre)}</b>${c.enRiesgo ? ' <span style="color:var(--red)">— '+esc(c.enRiesgo)+'</span>' : ' <span style="color:var(--red)">— +14 días sin contacto</span>'}`),
+    'Sin clientes en riesgo por falta de contacto');
+
+  return `<div class="page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">📋 Reporte Semanal</div>
+        <div class="page-subtitle">Semana del ${fmtShort(lunesEstaStr)} al ${fmtShort(domEstaStr)} · Generado ${hoy.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long'})}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="copiarReporte()">📋 Copiar reporte</button>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--text3);line-height:1.6">
+      💡 <strong style="color:var(--text2)">Cómo mejorar el reporte:</strong>
+      Para que se auto-complete, registra <b>interacciones</b> (reuniones, demos, propuestas) en cada ficha de cliente.
+      Agrega <b>fecha de próxima reunión</b> en cada ficha y una <b>nota de riesgo</b> si un cliente no responde.
+    </div>
+    ${sec1}${sec2}${sec3}${sec4}${sec5}${sec6}${sec7}
+  </div>`;
+}
+
+function copiarReporte(){
+  const hoy = new Date();
+  const dow = hoy.getDay();
+  const diasHastaLunes = dow === 0 ? 1 : (8 - dow);
+  const lunesProx = new Date(hoy); lunesProx.setDate(hoy.getDate() + diasHastaLunes);
+  const domProx = new Date(lunesProx); domProx.setDate(lunesProx.getDate() + 6);
+  const lunesEsta = new Date(hoy); lunesEsta.setDate(hoy.getDate() - (dow === 0 ? 6 : dow - 1));
+  const domenEsta = new Date(lunesEsta); domenEsta.setDate(lunesEsta.getDate() + 6);
+  const toYMD = d => d.toISOString().slice(0,10);
+  const fmtShort = d => { const [y,m,day] = d.split('-'); return `${day}/${m}`; };
+  const UF_CLP = 38500;
+  function mrr(c){ if(!c.monto) return ''; const v=parseFloat(c.monto); if(isNaN(v)) return ''; return c.monedaTipo==='UF'?`${c.monto} UF`:`$${Number(c.monto).toLocaleString('es-CL')} CLP`; }
+  const lunesStr=toYMD(lunesProx), domStr=toYMD(domProx), lunesEstaStr=toYMD(lunesEsta), domEstaStr=toYMD(domenEsta);
+  const etapasCierre=['acuerdo_alcanzado','periodo_prueba','pago_directo','validacion_bot','en_proceso_pago'];
+  const reunAll = DB.clientes.filter(c=>c.fechaProx&&c.fechaProx>=lunesStr&&c.fechaProx<=domStr&&c.estado!=='perdido');
+  const pilotos = DB.clientes.filter(c=>c.estado==='periodo_prueba');
+  const cierres = DB.clientes.filter(c=>c.estado==='cliente_activo'&&c.createdAt&&c.createdAt.slice(0,10)>=lunesEstaStr&&c.createdAt.slice(0,10)<=domEstaStr);
+  const interSemana = DB.interacciones.filter(i=>{const fd=(i.fecha||'').slice(0,10);return fd>=lunesEstaStr&&fd<=domEstaStr;});
+  const actCount={};interSemana.forEach(i=>{actCount[i.tipo]=(actCount[i.tipo]||0)+1;});
+  const enRiesgo = DB.clientes.filter(c=>c.enRiesgo&&c.enRiesgo.trim()&&c.estado!=='perdido');
+  const probables = DB.clientes.filter(c=>etapasCierre.includes(c.estado));
+  const noResponde = DB.clientes.filter(c=>{if(c.estado==='perdido')return false;if(c.enRiesgo&&c.enRiesgo.toLowerCase().includes('no responde'))return true;const lastI=DB.interacciones.filter(i=>i.clienteId===c.id).sort((a,b)=>b.fecha.localeCompare(a.fecha))[0];if(!lastI)return false;const dias=Math.floor((hoy-new Date(lastI.fecha))/86400000);return etapasCierre.includes(c.estado)&&dias>=14;});
+  let txt=`📊 REPORTE SEMANAL AYHUNGRY\nSemana ${fmtShort(lunesEstaStr)} al ${fmtShort(domEstaStr)} (${hoy.toLocaleDateString('es-CL')})\n${'─'.repeat(40)}\n\n`;
+  txt+=`1️⃣  Reuniones próxima semana (${fmtShort(lunesStr)}-${fmtShort(domStr)}):\n`;
+  if(reunAll.length)reunAll.forEach(c=>txt+=`  - ${c.nombre}${c.fechaProx?' ('+fmtShort(c.fechaProx)+')':''}\n`);else txt+=`  Sin reuniones agendadas\n`;
+  txt+=`\n2️⃣  Pilotos corriendo:\n`;
+  if(pilotos.length)pilotos.forEach(c=>txt+=`  - ${c.nombre}${c.pruebaInicio?' (inicio '+fmtShort(c.pruebaInicio)+')':''}\n`);else txt+=`  Sin pilotos activos\n`;
+  txt+=`\n3️⃣  Cierres semana:\n`;
+  if(cierres.length)cierres.forEach(c=>txt+=`  - ${c.nombre}${mrr(c)?' – '+mrr(c)+' MRR':''}\n`);else txt+=`  Sin cierres esta semana\n`;
+  txt+=`\n4️⃣  Actividad:\n`;
+  const tipos=Object.entries(actCount);if(tipos.length){tipos.forEach(([t,n])=>txt+=`  - ${n} ${TIPO_LABELS[t]||t}\n`);txt+=`  - ${interSemana.length} total interacciones\n`;}else txt+=`  Sin actividad registrada esta semana\n`;
+  txt+=`\n5️⃣  Riesgos:\n`;
+  if(enRiesgo.length)enRiesgo.forEach(c=>txt+=`  - ${c.nombre}: ${c.enRiesgo}\n`);else txt+=`  Sin alertas de riesgo\n`;
+  txt+=`\n6️⃣  Próximos cierres probables:\n`;
+  if(probables.length)probables.forEach(c=>{const e=PIPELINE.find(p=>p.id===c.estado);txt+=`  - ${c.nombre}${e?' ('+e.label+')':''}\n`;});else txt+=`  Sin cierres probables\n`;
+  txt+=`\n7️⃣  Negocio en riesgo (no responde):\n`;
+  if(noResponde.length)noResponde.forEach(c=>txt+=`  - ${c.nombre}${c.enRiesgo?': '+c.enRiesgo:' (+14 días sin contacto)'}\n`);else txt+=`  Sin clientes en riesgo\n`;
+  navigator.clipboard.writeText(txt).then(()=>showToast('✅ Reporte copiado al portapapeles')).catch(()=>showToast('❌ Error al copiar — intenta seleccionar el texto manualmente','error'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATOS / BACKUP
+// ═══════════════════════════════════════════════════════════
+function renderDatos(){
+  const total = DB.clientes.length;
+  const inters = DB.interacciones.length;
+  const sizeRaw = JSON.stringify(DB).length;
+  const sizeKB = (sizeRaw / 1024).toFixed(1);
+  return `<div class="page">
+    <div class="page-header">
+      <div><div class="page-title">💾 Datos & Backup</div>
+      <div class="page-subtitle">Exporta, importa y protege tu información</div></div>
+    </div>
+
+    <!-- Info -->
+    <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;flex:1;min-width:160px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--accent2)">${total}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">Clientes guardados</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;flex:1;min-width:160px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--accent2)">${inters}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">Interacciones / Tareas</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;flex:1;min-width:160px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--accent2)">${sizeKB} KB</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">Tamaño de datos</div>
+      </div>
+    </div>
+
+    <!-- Backup Automático -->
+    <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:var(--radius);padding:24px;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:6px">🛡️ Backup Automático a Carpeta</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:14px;line-height:1.6">
+        Selecciona la carpeta <strong>AyHungry</strong> en tu Mac — el CRM guardará un JSON en cada cambio.<br>
+        Genera <code>crm_data.json</code> + <code>AyHungry_CRM_latest.json</code> (siempre al día). El agente programado los usa para actualizar el HTML automáticamente.
+      </div>
+      <div id="backupAutoStatus" style="margin-bottom:14px;font-size:13px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="color:var(--text3)">Cargando estado…</span>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-top:8px;border-top:1px solid var(--border);padding-top:10px">
+        💡 Además de la carpeta, cada cambio se guarda automáticamente en el backup interno del navegador (IndexedDB) como segunda capa de seguridad. Si el CRM alguna vez no encuentra datos en localStorage, los recuperará desde ahí.
+      </div>
+    </div>
+
+    <!-- Exportar -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">📤 Exportar datos manualmente</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.6">
+        Descarga todos tus clientes, interacciones y tareas como un archivo JSON.<br>
+        Úsalo como respaldo manual o para migrar a otro equipo / computador.
+      </div>
+      <button class="btn btn-primary" onclick="exportarDatos()">⬇️ Descargar backup (.json)</button>
+    </div>
+
+    <!-- Importar -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">📥 Importar datos</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.6">
+        Carga un archivo de backup generado por este CRM.<br>
+        <strong style="color:var(--yellow)">⚠️ Reemplaza todos los datos actuales.</strong> Exporta primero si tienes datos que quieres conservar.
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <input type="file" id="importFile" accept=".json" onchange="previsualizarImport(event)"
+          style="font-size:13px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer">
+        <button class="btn" id="btnConfirmImport" style="display:none;background:var(--green);color:#fff" onclick="confirmarImport()">✅ Confirmar importación</button>
+      </div>
+      <div id="importPreview" style="margin-top:12px;font-size:13px;color:var(--text3)"></div>
+    </div>
+
+    <!-- Restaurar backup embebido -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">🔄 Restaurar datos guardados</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.6">
+        Si perdiste tus clientes o el CRM muestra datos incorrectos, usa esta opción para restaurar el último snapshot guardado en el navegador (IndexedDB).<br>
+        <strong style="color:var(--yellow)">⚠️ Reemplaza los datos actuales del CRM.</strong>
+      </div>
+      <button class="btn" style="background:var(--accent2);color:#fff" onclick="restaurarBackup()">🔄 Restaurar último backup</button>
+      <div id="restaurarMsg" style="margin-top:10px;font-size:13px;color:var(--green);display:none">✅ Datos restaurados correctamente. Revisa el Kanban.</div>
+    </div>
+
+    <!-- Limpiar demo -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">🗑️ Borrar datos demo</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.6">
+        Si ves clientes de ejemplo (Restaurante El Mesón, Sushi Hanako, etc.) y quieres empezar con datos limpios.
+      </div>
+      <button class="btn" style="background:var(--red);color:#fff" onclick="borrarDemo()">🗑️ Eliminar clientes demo</button>
+    </div>
+
+    <!-- Papelera -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-top:16px">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">🗑️ Papelera de clientes</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:12px;line-height:1.6">
+        Clientes eliminados (soft-delete). Puedes restaurarlos o borrarlos permanentemente.
+      </div>
+      <div id="papelera-list">${renderPapelera()}</div>
+    </div>
+  </div>`;
+}
+
+let _importData = null;
+function exportarDatos(){
+  saveDB();
+  const json = localStorage.getItem(STORAGE_KEY) || JSON.stringify(DB);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  a.href = url; a.download = `AyHungry_CRM_backup_${ts}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('✅ Backup descargado correctamente');
+}
+
+function previsualizarImport(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      _importData = JSON.parse(ev.target.result);
+      const c = (_importData.clientes||[]).length;
+      const i = (_importData.interacciones||[]).length;
+      document.getElementById('importPreview').innerHTML =
+        `<span style="color:var(--green)">✅ Archivo válido — ${c} clientes, ${i} interacciones</span>`;
+      document.getElementById('btnConfirmImport').style.display='inline-flex';
+    }catch(err){
+      document.getElementById('importPreview').innerHTML =
+        `<span style="color:var(--red)">❌ Archivo inválido — no es un backup de AyHungry CRM</span>`;
+      _importData = null;
+      document.getElementById('btnConfirmImport').style.display='none';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmarImport(){
+  if(!_importData) return;
+  if(!confirm(`¿Reemplazar todos los datos actuales con este backup?\n${(_importData.clientes||[]).length} clientes, ${(_importData.interacciones||[]).length} interacciones.\n\nEsta acción no se puede deshacer.`)) return;
+  DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, _importData);
+  saveDB();
+  _importData = null;
+  showToast(`✅ Datos importados: ${DB.clientes.length} clientes`);
+  showView('dashboard');
+}
+
+function borrarDemo(){
+  const demoNombres = ['Restaurante El Mesón','Sushi Hanako','Parrilla Los Andes','Café La Pérgola','Pizza Pronto'];
+  const antes = DB.clientes.length;
+  DB.clientes = DB.clientes.filter(c=>!demoNombres.includes(c.nombre));
+  const ids = new Set(DB.clientes.map(c=>c.id));
+  DB.interacciones = DB.interacciones.filter(i=>ids.has(i.clienteId));
+  saveDB();
+  const eliminados = antes - DB.clientes.length;
+  showToast(eliminados > 0 ? `🗑️ ${eliminados} clientes demo eliminados` : 'No se encontraron clientes demo');
+  showView('datos');
+}
+
+async function restaurarBackup(){
+  if(!confirm('¿Restaurar el último backup guardado? Esto reemplazará los datos actuales del CRM.')) return;
+  try{
+    const idbJson = await loadLatestFromIDB();
+    if(!idbJson){
+      showToast('No hay backup disponible. Exporta manualmente desde Configuración.', 'error');
+      return;
+    }
+    const parsed = JSON.parse(idbJson);
+    if(!parsed.clientes || parsed.clientes.length === 0){
+      showToast('No hay backup disponible. Exporta manualmente desde Configuración.', 'error');
+      return;
+    }
+    DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, parsed);
+    saveDB();
+    showToast('✅ Backup restaurado — ' + DB.clientes.length + ' clientes cargados');
+    const msg = document.getElementById('restaurarMsg');
+    if(msg){ msg.style.display='block'; setTimeout(()=>msg.style.display='none', 5000); }
+    showView('kanban');
+  }catch(e){
+    console.error('[restaurarBackup] Error al restaurar desde IDB:', new Date().toISOString(), e);
+    showToast('Error al restaurar: ' + e.message, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FICHA CLIENTE MODAL
+// ═══════════════════════════════════════════════════════════
+let currentClienteId = null;
+
+function openFicha(id){
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  currentClienteId = id;
+  document.getElementById('modal-title').textContent = c.nombre||'Sin nombre';
+  const p = PIPELINE.find(x=>x.id===c.estado)||{label:c.estado,color:'#64748b'};
+  document.getElementById('modal-sub').innerHTML = `<span style="color:${p.color}">${p.label}</span> — ${c.contacto||'Sin contacto'} ${c.tel?'· '+c.tel:''}`;
+  renderFichaTab(0, c);
+  renderFichaTab(1, c);
+  renderFichaTab(2, c);
+  renderFichaTab(3, c);
+  renderFichaTab(4, c);
+  switchTab(0);
+  document.getElementById('modal-ficha').style.display = 'flex';
+}
+
+function closeFicha(){
+  document.getElementById('modal-ficha').style.display = 'none';
+  currentClienteId = null;
+  showView(currentView);
+}
+
+function switchTab(idx){
+  document.querySelectorAll('#ficha-tabs .tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+function renderFichaTab(idx, c){
+  const el = document.getElementById('tab-'+idx);
+  if(idx===0) el.innerHTML = tabInfoGeneral(c);
+  if(idx===1) el.innerHTML = tabFichaGoogle(c);
+  if(idx===2) el.innerHTML = tabPruebaPago(c);
+  if(idx===3) el.innerHTML = tabFacturacion(c);
+  if(idx===4) el.innerHTML = tabHistorial(c);
+}
+
+function tabInfoGeneral(c){
+  return `
+    <div class="form-row">
+      <div class="form-group"><label>Nombre del Restaurante *</label><input type="text" id="f-nombre" value="${esc(c.nombre)}"></div>
+      <div class="form-group"><label>Contacto (Dueño/Encargado)</label><input type="text" id="f-contacto" value="${esc(c.contacto||'')}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="f-tel" value="${esc(c.tel||'')}"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="f-email" value="${esc(c.email||'')}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Estado Pipeline</label>
+        <select id="f-estado" onchange="checkValidacionTecnica()">
+          ${PIPELINE.map(p=>`<option value="${p.id}" ${c.estado===p.id?'selected':''}>${p.label}</option>`).join('')}
+        </select>
+        <div id="val-tecnica-warn" style="display:${c.estado==='validacion_bot'&&c.modulos.length===0?'block':'none'};font-size:11px;color:var(--yellow);margin-top:5px;background:rgba(234,179,8,.1);padding:5px 8px;border-radius:5px">
+          ⚠️ Esta etapa requiere al menos Módulo 1 o Módulo 2 activo
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Prioridad</label>
+        <select id="f-prioridad">
+          <option value="alta" ${c.prioridad==='alta'?'selected':''}>🔴 Alta</option>
+          <option value="media" ${c.prioridad==='media'?'selected':''}>🟡 Media</option>
+          <option value="baja" ${c.prioridad==='baja'?'selected':''}>🟢 Baja</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Canal de Origen</label>
+        <select id="f-canal" onchange="toggleCanalDetalle('f')">
+          ${Object.entries(CANAL_LABELS).map(([k,v])=>`<option value="${k}" ${c.canal===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+        <input type="text" id="f-canal-detalle" placeholder="¿Cuál? Ej: LinkedIn, feria, boca a boca..." value="${esc(c.canalDetalle||'')}" style="margin-top:6px;${c.canal==='otro'?'':'display:none'}">
+      </div>
+      <div class="form-group">
+        <label>Fecha de Alta</label>
+        <input type="date" id="f-fechaIni" value="${c.fechaIni||c.createdAt?.split('T')[0]||''}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Módulos Contratados</label>
+      <div class="checkbox-group">
+        <label class="checkbox-item">
+          <input type="checkbox" id="f-mod1" ${c.modulos.includes('modulo1')?'checked':''} onchange="checkValidacionTecnica()">
+          <span class="mod-tag mod1">Módulo 1 — Reservas y Operación</span>
+        </label>
+        <label class="checkbox-item">
+          <input type="checkbox" id="f-mod2" ${c.modulos.includes('modulo2')?'checked':''} onchange="checkValidacionTecnica()">
+          <span class="mod-tag mod2">Módulo 2 — Reseñas y Reputación</span>
+        </label>
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:16px">📍</span>
+        <div style="font-size:13px;font-weight:600">Locales / Sucursales de la Marca</div>
+        ${(c.cantidadLocales||1)>1?`<span class="badge badge-blue">${c.cantidadLocales} locales</span>`:'<span class="badge badge-gray">1 local</span>'}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>¿Cuántos locales tiene esta marca?</label>
+          <input type="number" id="f-cantidadLocales" min="1" max="20" value="${c.cantidadLocales||1}"
+            oninput="syncLocalesUI(this.value)"
+            style="width:100px">
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Cada local tendrá su propia configuración en la pestaña Ficha Google</div>
+        </div>
+      </div>
+      ${(c.locales||[]).slice(0, c.cantidadLocales||1).map((l,i)=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+          <span style="font-size:11px;color:var(--text3);min-width:52px">Local ${i+1}</span>
+          <input type="text" id="f-local-nombre-${i}" value="${esc(l.nombre||'')}" placeholder="Nombre o dirección del local (ej: Las Condes)" style="flex:1">
+          <span title="Botón Reservar Mesa">${(BOTON_RESERVA_STATUS[l.botonReserva]||BOTON_RESERVA_STATUS.pendiente).icon}</span>
+          <span title="Ficha Google Match">${(FICHA_MATCH_STATUS[l.fichaMatch]||FICHA_MATCH_STATUS.pendiente).icon}</span>
+        </div>`).join('')}
+    </div>
+
+    <div class="form-group"><label>Notas Generales</label><textarea id="f-notas" rows="3">${esc(c.notas||'')}</textarea></div>
+    <div class="form-group"><label>⚠️ Riesgo / Alerta (aparece en Reporte Semanal)</label><input type="text" id="f-enRiesgo" value="${esc(c.enRiesgo||'')}" placeholder="Ej: se congeló por presupuesto, no responde contactos..."></div>
+  `;
+}
+
+function tabFichaGoogle(c){
+  const locales = ensureLocales(c);
+  const n = locales.length;
+
+  const localSections = locales.map((l, i)=>{
+    const brS = BOTON_RESERVA_STATUS[l.botonReserva]||BOTON_RESERVA_STATUS.pendiente;
+    const fmS = FICHA_MATCH_STATUS[l.fichaMatch]||FICHA_MATCH_STATUS.pendiente;
+    const brOpts = Object.entries(BOTON_RESERVA_STATUS).map(([k,v])=>`<option value="${k}" ${l.botonReserva===k?'selected':''}>${v.icon} ${v.label}</option>`).join('');
+    const fmOpts = Object.entries(FICHA_MATCH_STATUS).map(([k,v])=>`<option value="${k}" ${l.fichaMatch===k?'selected':''}>${v.icon} ${v.label}</option>`).join('');
+    const localLabel = l.nombre ? `Local ${i+1} — ${l.nombre}` : `Local ${i+1}`;
+    return `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          📍 ${esc(localLabel)}
+        </div>
+        <div class="status-grid" style="margin-bottom:10px">
+          <div class="status-box">
+            <label>Botón Reservar Mesa</label>
+            <div class="status-indicator">
+              <span class="dot ${brS.dot}"></span>
+              <span>${brS.icon} ${brS.label}</span>
+            </div>
+            ${l.botonReserva==='no_match'?'<div style="font-size:10px;color:var(--red);margin-top:3px">🚨 Alerta P2</div>':''}
+          </div>
+          <div class="status-box">
+            <label>Ficha Google Match</label>
+            <div class="status-indicator">
+              <span class="dot ${fmS.dot}"></span>
+              <span>${fmS.icon} ${fmS.label}</span>
+            </div>
+            ${l.fichaMatch==='no_match'?'<div style="font-size:10px;color:var(--red);margin-top:3px">🚨 Alerta P1</div>':''}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estado Botón Reservar Mesa</label>
+            <select id="f-br-${i}">${brOpts}</select>
+          </div>
+          <div class="form-group">
+            <label>Ficha Google Match</label>
+            <select id="f-fm-${i}">${fmOpts}</select>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    ${n>1?`<div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--blue)">
+      📍 ${n} locales — configura cada uno por separado
+    </div>`:''}
+    ${localSections}
+    <div class="form-group" style="margin-top:4px">
+      <label>Notas Ficha Google</label>
+      <textarea id="f-fichaGoogleNota" rows="3">${esc(c.fichaGoogleNota||'')}</textarea>
+    </div>
+  `;
+}
+
+function tabPruebaPago(c){
+  return `
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo de Inicio</label>
+        <select id="f-iniciTipo">
+          <option value="prueba" ${c.iniciTipo==='prueba'?'selected':''}>⏱️ Período de Prueba</option>
+          <option value="pago_directo" ${c.iniciTipo==='pago_directo'?'selected':''}>💳 Pago Directo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estado de Pago</label>
+        <select id="f-pagoEstado">
+          <option value="pendiente" ${c.pagoEstado==='pendiente'?'selected':''}>⏳ Pendiente</option>
+          <option value="al_dia" ${c.pagoEstado==='al_dia'?'selected':''}>✅ Al día</option>
+          <option value="atrasado" ${c.pagoEstado==='atrasado'?'selected':''}>🔴 Atrasado</option>
+          <option value="cancelado" ${c.pagoEstado==='cancelado'?'selected':''}>❌ Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Inicio de Prueba</label><input type="date" id="f-pruebaInicio" value="${c.pruebaInicio||''}"></div>
+      <div class="form-group"><label>Fin de Prueba</label><input type="date" id="f-pruebaFin" value="${c.pruebaFin||''}"></div>
+    </div>
+    <div class="form-group">
+      <label>Resultado de Prueba</label>
+      <select id="f-pruebaResultado">
+        <option value="" ${!c.pruebaResultado?'selected':''}>— En curso —</option>
+        <option value="exitosa" ${c.pruebaResultado==='exitosa'?'selected':''}>✅ Exitosa — Pasó a pago</option>
+        <option value="fallida" ${c.pruebaResultado==='fallida'?'selected':''}>❌ No continuó</option>
+        <option value="en_negociacion" ${c.pruebaResultado==='en_negociacion'?'selected':''}>🤝 En negociación</option>
+      </select>
+    </div>
+    <div style="background:var(--bg3);border-radius:8px;padding:14px;margin-top:10px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text2)">💰 Monto Mensual</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Moneda</label>
+          <select id="f-monedaTipo">
+            <option value="CLP" ${c.monedaTipo!=='UF'?'selected':''}>$ CLP — Pesos Chilenos</option>
+            <option value="UF" ${c.monedaTipo==='UF'?'selected':''}>UF — Unidad de Fomento</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Monto</label>
+          <input type="number" id="f-monto" value="${c.monto||''}" placeholder="Ej: 50000 o 1.5">
+        </div>
+      </div>
+      ${c.monto?`<div style="font-size:12px;color:var(--text2);margin-top:-6px">Equivale a: <strong>${c.monedaTipo==='CLP'?fmtUF(toUF(c)):fmtCLP(toCLP(c))}</strong> (1 UF = ${UF_RATE.toLocaleString('es-CL')} CLP)</div>`:''}
+      <div class="form-row" style="margin-top:6px">
+        <div class="form-group">
+          <label>Método de Pago</label>
+          <select id="f-metodoPago">
+            <option value="transferencia" ${c.metodoPago==='transferencia'?'selected':''}>🏦 Transferencia</option>
+            <option value="tarjeta" ${c.metodoPago==='tarjeta'?'selected':''}>💳 Tarjeta</option>
+            <option value="efectivo" ${c.metodoPago==='efectivo'?'selected':''}>💵 Efectivo</option>
+            <option value="otro" ${c.metodoPago==='otro'?'selected':''}>Otro</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Día de Pago (del mes)</label><input type="number" id="f-diaPago" min="1" max="31" value="${c.diaPago||''}" placeholder="Ej: 5"></div>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:10px">
+      <div class="form-group"><label>Próxima Acción</label><input type="text" id="f-proxima" value="${esc(c.proxima||'')}"></div>
+      <div class="form-group"><label>Fecha Próxima Acción</label><input type="date" id="f-fechaProx" value="${c.fechaProx||''}"></div>
+    </div>
+  `;
+}
+
+function tabFacturacion(c){
+  return `
+    <div style="background:var(--bg3);border-radius:8px;padding:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--accent2)">🧾 Datos de Facturación</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>RUT *</label>
+          <input type="text" id="f-rut" value="${esc(c.rut||'')}" placeholder="76.543.210-3" oninput="autoFormatRUT(this)">
+        </div>
+        <div class="form-group">
+          <label>Nombre o Razón Social *</label>
+          <input type="text" id="f-nombreFiscal" value="${esc(c.nombreFiscal||'')}" placeholder="Sociedad Gastronómica Ltda.">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" id="f-direccionFiscal" value="${esc(c.direccionFiscal||'')}" placeholder="Av. Providencia 1234, Santiago">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Correo de Facturación</label>
+          <input type="email" id="f-correoFiscal" value="${esc(c.correoFiscal||'')}" placeholder="facturacion@restaurante.cl">
+        </div>
+        <div class="form-group">
+          <label>Contacto de Cierre</label>
+          <input type="text" id="f-contactoCierre" value="${esc(c.contactoCierre||'')}" placeholder="Persona que firmó el acuerdo">
+        </div>
+      </div>
+    </div>
+    ${!c.rut||!c.nombreFiscal?`<div style="background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--yellow)">
+      ⚠️ Facturación incompleta — RUT y Razón Social son requeridos para activar el cliente
+    </div>`:''}
+  `;
+}
+
+function tabHistorial(c){
+  const ints = DB.interacciones.filter(i=>i.clienteId===c.id).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const items = ints.map(i=>{
+    const tl = TIPO_LABELS[i.tipo]||i.tipo;
+    return `<div class="hist-item">
+      <div class="hist-icon">${tl.split(' ')[0]}</div>
+      <div class="hist-content">
+        <div class="hist-header">
+          <div class="hist-title">${tl.substring(tl.indexOf(' ')+1)}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="hist-date">${fmtDatetime(i.fecha)}</div>
+            <button class="btn btn-xs btn-secondary" onclick="editarTarea(${i.id})" title="Editar" style="padding:1px 6px;font-size:11px">✏️</button>
+          </div>
+        </div>
+        ${i.nota?`<div class="hist-body">${i.nota}</div>`:''}
+        ${i.tarea?`<div style="margin-top:4px;font-size:11px;background:var(--bg4);padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:6px">
+          ✅ ${i.tarea} ${i.tareaFecha?'— '+fmtDate(i.tareaFecha):''}
+          ${i.tareaCompletada?'<span style="color:var(--green)">✓ Completada</span>':'<button class="btn btn-xs btn-success" onclick="completarTarea('+i.id+');renderFichaTab(4,DB.clientes.find(x=>x.id==='+c.id+'))">Completar</button>'}
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text3);font-size:13px;padding:10px">Sin interacciones registradas</div>';
+
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600">${ints.length} interacciones</div>
+      <button class="btn btn-primary btn-sm" onclick="openInter(${c.id})">➕ Nueva Interacción</button>
+    </div>
+    ${items}
+  </div>`;
+}
+
+function autoFormatRUT(input){
+  let v = input.value.replace(/[^0-9kK]/g,'');
+  if(v.length>1){
+    const body = v.slice(0,-1);
+    const dv = v.slice(-1);
+    const formatted = body.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    input.value = formatted+'-'+dv;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAVE CLIENTE
+// ═══════════════════════════════════════════════════════════
+function saveCliente(){
+  const c = DB.clientes.find(x=>x.id===currentClienteId);
+  if(!c) return;
+  const g = id => document.getElementById(id);
+  // Tab 0 — Info
+  c.nombre    = g('f-nombre')?.value || c.nombre;
+  c.contacto  = g('f-contacto')?.value || '';
+  c.tel       = g('f-tel')?.value || '';
+  c.email     = g('f-email')?.value || '';
+  c.estado    = g('f-estado')?.value || c.estado;
+  c.prioridad = g('f-prioridad')?.value || c.prioridad;
+  c.canal        = g('f-canal')?.value || c.canal;
+  c.canalDetalle = g('f-canal-detalle')?.value || '';
+  c.fechaIni  = g('f-fechaIni')?.value || '';
+  c.notas     = g('f-notas')?.value || '';
+  c.enRiesgo  = g('f-enRiesgo')?.value || '';
+  const mod1  = g('f-mod1')?.checked;
+  const mod2  = g('f-mod2')?.checked;
+  c.modulos   = [];
+  if(mod1) c.modulos.push('modulo1');
+  if(mod2) c.modulos.push('modulo2');
+
+  // Validación Técnica requiere al menos un módulo
+  if(c.estado === 'validacion_bot' && c.modulos.length === 0){
+    showToast('⚠️ Validación Técnica requiere al menos un módulo activo', 'error');
+    // Mostrar aviso en la ficha sin cerrar
+    const estadoSel = g('f-estado');
+    if(estadoSel){
+      estadoSel.style.borderColor = 'var(--red)';
+      setTimeout(()=>estadoSel.style.borderColor='', 2500);
+    }
+    return;
+  }
+
+  // Tab 1 — Ficha Google (multi-local)
+  c.cantidadLocales = parseInt(g('f-cantidadLocales')?.value)||1;
+  c.locales = ensureLocales(c);
+  c.locales.forEach((l,i)=>{
+    const brEl = g(`f-br-${i}`);
+    const fmEl = g(`f-fm-${i}`);
+    const nmEl = g(`f-local-nombre-${i}`);
+    if(brEl) l.botonReserva = brEl.value;
+    if(fmEl) l.fichaMatch   = fmEl.value;
+    if(nmEl) l.nombre       = nmEl.value;
+  });
+  c.fichaGoogleNota = g('f-fichaGoogleNota')?.value || '';
+  // Tab 2 — Prueba/Pago
+  c.iniciTipo      = g('f-iniciTipo')?.value || c.iniciTipo;
+  c.pagoEstado     = g('f-pagoEstado')?.value || c.pagoEstado;
+  c.pruebaInicio   = g('f-pruebaInicio')?.value || '';
+  c.pruebaFin      = g('f-pruebaFin')?.value || '';
+  c.pruebaResultado= g('f-pruebaResultado')?.value || '';
+  c.monedaTipo     = g('f-monedaTipo')?.value || 'CLP';
+  c.monto          = g('f-monto')?.value || '';
+  c.metodoPago     = g('f-metodoPago')?.value || c.metodoPago;
+  c.diaPago        = g('f-diaPago')?.value || '';
+  c.proxima        = g('f-proxima')?.value || '';
+  c.fechaProx      = g('f-fechaProx')?.value || '';
+  // Tab 3 — Facturación
+  c.rut            = g('f-rut')?.value || '';
+  c.nombreFiscal   = g('f-nombreFiscal')?.value || '';
+  c.direccionFiscal= g('f-direccionFiscal')?.value || '';
+  c.correoFiscal   = g('f-correoFiscal')?.value || '';
+  c.contactoCierre = g('f-contactoCierre')?.value || '';
+
+  saveDB();
+  showToast('Cliente guardado ✓');
+  // Cerrar ficha y refrescar la vista actual
+  document.getElementById('modal-ficha').style.display = 'none';
+  currentClienteId = null;
+  showView(currentView);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACCIONES
+// ═══════════════════════════════════════════════════════════
+let interClienteId = null;
+let editingInterId = null;
+let archivoBase64 = null;
+let archivoNombre = '';
+
+function openInter(clienteId, interId=null){
+  interClienteId = clienteId;
+  editingInterId = interId;
+  document.getElementById('inter-modal-title').textContent = interId ? '✏️ Editar Interacción' : '➕ Registrar Interacción';
+  const now = new Date();
+  const local = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  archivoBase64 = null; archivoNombre = '';
+  document.getElementById('i-archivo-preview').style.display = 'none';
+  // Pre-fill si es edición
+  if(interId){
+    const inter = DB.interacciones.find(x=>x.id===interId);
+    if(inter){
+      document.getElementById('i-tipo').value       = inter.tipo||'whatsapp';
+      document.getElementById('i-fecha').value      = inter.fecha?.slice(0,16)||local;
+      document.getElementById('i-nota').value       = inter.nota||'';
+      document.getElementById('i-tarea').value      = inter.tarea||'';
+      document.getElementById('i-tarea-fecha').value= inter.tareaFecha||'';
+      document.getElementById('i-reunion-titulo').value  = inter.reunionTitulo||'';
+      document.getElementById('i-reunion-lugar').value   = inter.reunionLugar||'';
+      document.getElementById('i-reunion-duracion').value= inter.reunionDuracion||'60';
+      if(inter.archivoNombre){
+        archivoBase64 = inter.archivoBase64||null;
+        archivoNombre = inter.archivoNombre;
+        document.getElementById('i-archivo-nombre').textContent = inter.archivoNombre;
+        document.getElementById('i-archivo-size').textContent = '';
+        document.getElementById('i-archivo-preview').style.display = 'flex';
+      }
+    }
+  } else {
+    document.getElementById('i-tipo').value        = 'whatsapp';
+    document.getElementById('i-fecha').value       = local;
+    document.getElementById('i-nota').value        = '';
+    document.getElementById('i-tarea').value       = '';
+    document.getElementById('i-tarea-fecha').value = '';
+    document.getElementById('i-reunion-titulo').value   = '';
+    document.getElementById('i-reunion-lugar').value    = '';
+    document.getElementById('i-reunion-duracion').value = '60';
+  }
+  toggleReunionFields();
+  if(clienteId===null){
+    const existing = document.getElementById('i-cliente-sel');
+    if(!existing){
+      const sel = document.createElement('div');
+      sel.innerHTML = `<div class="form-group" style="margin-bottom:10px">
+        <label>Cliente</label>
+        <select id="i-cliente-sel">
+          <option value="">— Seleccionar —</option>
+          ${DB.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('')}
+        </select>
+      </div>`;
+      document.querySelector('#modal-inter .modal-body').prepend(sel.firstElementChild);
+    }
+  } else {
+    const existing = document.getElementById('i-cliente-sel');
+    if(existing) existing.parentElement.remove();
+  }
+  document.getElementById('modal-inter').style.display = 'flex';
+}
+
+function closeInter(){
+  document.getElementById('modal-inter').style.display = 'none';
+  const existing = document.getElementById('i-cliente-sel');
+  if(existing) existing.parentElement.remove();
+  archivoBase64 = null; archivoNombre = '';
+  editingInterId = null;
+}
+
+function toggleReunionFields(){
+  const tipo = document.getElementById('i-tipo')?.value;
+  document.getElementById('reunion-fields').style.display = tipo==='reunion' ? 'block' : 'none';
+}
+
+function abrirGoogleCalendar(){
+  const titulo   = document.getElementById('i-reunion-titulo').value || 'Reunión AyHungry';
+  const fechaVal = document.getElementById('i-fecha').value;
+  const durMin   = parseInt(document.getElementById('i-reunion-duracion').value)||60;
+  const lugar    = document.getElementById('i-reunion-lugar').value || '';
+  const nota     = document.getElementById('i-nota').value || '';
+  if(!fechaVal){ showToast('Ingresa fecha y hora primero','error'); return; }
+  const start  = new Date(fechaVal);
+  const end    = new Date(start.getTime() + durMin*60000);
+  const fmt    = d => d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const params = new URLSearchParams({
+    action:'TEMPLATE',
+    text: titulo,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details: nota,
+    location: lugar,
+  });
+  window.open('https://calendar.google.com/calendar/render?'+params.toString(), '_blank');
+}
+
+function previewArchivo(input){
+  const file = input.files[0];
+  if(!file) return;
+  const maxMB = 5;
+  if(file.size > maxMB*1024*1024){ showToast(`Archivo muy grande (máx ${maxMB}MB)`,'error'); input.value=''; return; }
+  archivoNombre = file.name;
+  document.getElementById('i-archivo-nombre').textContent = file.name;
+  document.getElementById('i-archivo-size').textContent = '('+Math.round(file.size/1024)+' KB)';
+  document.getElementById('i-archivo-preview').style.display = 'flex';
+  const reader = new FileReader();
+  reader.onload = e => { archivoBase64 = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
+function clearArchivo(){
+  archivoBase64=null; archivoNombre='';
+  document.getElementById('i-archivo').value='';
+  document.getElementById('i-archivo-preview').style.display='none';
+}
+
+function saveInteraccion(){
+  let cid = interClienteId;
+  if(cid===null){
+    const sel = document.getElementById('i-cliente-sel');
+    cid = sel ? parseInt(sel.value) : null;
+    if(!cid){ showToast('Selecciona un cliente','error'); return; }
+  }
+  const data = {
+    clienteId: cid,
+    tipo:          document.getElementById('i-tipo').value,
+    fecha:         document.getElementById('i-fecha').value || new Date().toISOString(),
+    nota:          document.getElementById('i-nota').value,
+    tarea:         document.getElementById('i-tarea').value,
+    tareaFecha:    document.getElementById('i-tarea-fecha').value,
+    reunionTitulo: document.getElementById('i-reunion-titulo').value,
+    reunionLugar:  document.getElementById('i-reunion-lugar').value,
+    reunionDuracion: document.getElementById('i-reunion-duracion').value,
+    archivoBase64: archivoBase64,
+    archivoNombre: archivoNombre,
+  };
+  if(editingInterId){
+    const inter = DB.interacciones.find(x=>x.id===editingInterId);
+    if(inter){ Object.assign(inter, data); }
+  } else {
+    data.id = DB.nextIId++;
+    data.tareaCompletada = false;
+    DB.interacciones.push(data);
+  }
+  saveDB();
+  closeInter();
+  buildNav(); // actualiza badge de tareas
+  if(currentClienteId===cid){
+    const c = DB.clientes.find(x=>x.id===cid);
+    if(c) renderFichaTab(4, c);
+  }
+  showToast(editingInterId ? 'Interacción actualizada ✓' : 'Interacción guardada ✓');
+  if(currentView==='historial'||currentView==='tareas') showView(currentView);
+}
+
+function editarTarea(iid){
+  const inter = DB.interacciones.find(i=>i.id===iid);
+  if(!inter) return;
+  openInter(inter.clienteId, iid);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NUEVO CLIENTE (MODAL RAPIDO)
+// ═══════════════════════════════════════════════════════════
+function saveNuevoCliente(){
+  const nombre = document.getElementById('nc-nombre').value.trim();
+  if(!nombre){ alert('El nombre es obligatorio'); return; }
+  const c = newCliente({
+    nombre,
+    contacto: document.getElementById('nc-contacto').value,
+    tel: document.getElementById('nc-tel').value,
+    email: document.getElementById('nc-email').value,
+    estado: document.getElementById('nc-estado').value,
+    canal: document.getElementById('nc-canal').value,
+    canalDetalle: document.getElementById('nc-canal-detalle').value,
+    notas: document.getElementById('nc-notas').value,
+    modulos: [
+      ...(document.getElementById('nc-mod1').checked?['modulo1']:[]),
+      ...(document.getElementById('nc-mod2').checked?['modulo2']:[]),
+    ],
+  });
+  DB.clientes.push(c);
+  saveDB();
+  document.getElementById('modal-nuevo').style.display = 'none';
+  // Reset form
+  ['nc-nombre','nc-contacto','nc-tel','nc-email','nc-notas','nc-canal-detalle'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nc-canal-detalle').style.display='none';
+  document.getElementById('nc-mod1').checked = false;
+  document.getElementById('nc-mod2').checked = false;
+  showToast('Cliente creado ✓');
+  openFicha(c.id);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function confirmDeleteCliente(id){
+  // Si se llama desde la ficha abierta, usa currentClienteId
+  const cid = id !== undefined ? id : currentClienteId;
+  if(!cid) return;
+  const c = DB.clientes.find(x=>x.id===cid);
+  if(!c) return;
+
+  // Mini modal de confirmación
+  let overlay = document.getElementById('modal-confirm-delete');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'modal-confirm-delete';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 32px;max-width:420px;width:100%;text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">🗑️</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Eliminar cliente</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:6px">
+        ¿Seguro que deseas eliminar <strong style="color:var(--text)">${esc(c.nombre)}</strong>?
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:22px">
+        Se eliminará la tarjeta y todo su historial de interacciones. Esta acción no se puede deshacer.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-secondary" onclick="document.getElementById('modal-confirm-delete').style.display='none'">Cancelar</button>
+        <button class="btn btn-danger" onclick="deleteCliente(${cid})">Sí, eliminar</button>
+      </div>
+    </div>`;
+  overlay.style.display = 'flex';
+}
+
+function deleteCliente(id){
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  // Soft-delete: marca el cliente como eliminado en lugar de borrarlo
+  c.deleted = true;
+  c.deletedAt = new Date().toISOString();
+  saveDB();
+  document.getElementById('modal-confirm-delete').style.display = 'none';
+  document.getElementById('modal-ficha').style.display = 'none';
+  currentClienteId = null;
+  showToast('Cliente movido a la papelera (se puede restaurar en Configuración)');
+  showView(currentView);
+}
+
+function restaurarClientePapelera(id){
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  delete c.deleted;
+  delete c.deletedAt;
+  saveDB();
+  showToast('✅ Cliente restaurado correctamente');
+  showView('datos');
+}
+
+function hardDeleteCliente(id){
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  const nombre = c.nombre || 'este cliente';
+  if(!confirm('¿Eliminar permanentemente "' + nombre + '"?')) return;
+  if(!confirm('Segunda confirmación: esta acción NO se puede deshacer. ¿Continuar?')) return;
+  DB.clientes = DB.clientes.filter(x=>x.id!==id);
+  DB.interacciones = DB.interacciones.filter(x=>x.clienteId!==id);
+  saveDB();
+  showToast('🗑️ Cliente eliminado definitivamente');
+  showView('datos');
+}
+
+function renderPapelera(){
+  const eliminados = DB.clientes.filter(c=>c.deleted);
+  if(eliminados.length === 0){
+    return '<div style="color:var(--text3);font-size:13px;padding:12px 0">🗑️ La papelera está vacía</div>';
+  }
+  return eliminados.map(c=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="flex:1;font-size:13px"><strong>${esc(c.nombre)}</strong> <span style="color:var(--text3)">— ${c.contacto||''}</span></span>
+      <span style="font-size:11px;color:var(--text3)">${c.deletedAt ? new Date(c.deletedAt).toLocaleDateString('es-CL') : ''}</span>
+      <button class="btn btn-xs" style="background:var(--green);color:#fff" onclick="restaurarClientePapelera(${c.id})">♻️ Restaurar</button>
+      <button class="btn btn-xs btn-danger" onclick="hardDeleteCliente(${c.id})">🗑️ Eliminar</button>
+    </div>`).join('');
+}
+
+function showToast(msg, type='success'){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;box-shadow:0 4px 16px rgba(0,0,0,.3)';
+    document.body.appendChild(t);
+  }
+  t.style.background = type==='error'?'#ef4444':'#22c55e';
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(()=>t.style.opacity='0', 2500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function esc(str){ return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Asegura que c.locales tiene exactamente c.cantidadLocales elementos
+function ensureLocales(c){
+  const n = Math.max(1, parseInt(c.cantidadLocales)||1);
+  if(!Array.isArray(c.locales)) c.locales = [];
+  // Rellenar si faltan
+  while(c.locales.length < n){
+    // Replicar el primero como base
+    const base = c.locales[0]||{nombre:'',botonReserva:'pendiente',fichaMatch:'pendiente'};
+    c.locales.push({nombre:'', botonReserva: base.botonReserva, fichaMatch: base.fichaMatch});
+  }
+  // Recortar si sobran
+  return c.locales.slice(0, n);
+}
+
+// Cuando cambia la cantidad de locales desde Info General, re-renderiza Ficha Google
+function syncLocalesUI(val){
+  const c = DB.clientes.find(x=>x.id===currentClienteId);
+  if(!c) return;
+  // Primero guardar nombres ya escritos en Info General
+  for(let i=0; i<(c.cantidadLocales||1); i++){
+    const nmEl = document.getElementById(`f-local-nombre-${i}`);
+    if(nmEl && c.locales[i]) c.locales[i].nombre = nmEl.value;
+  }
+  c.cantidadLocales = Math.max(1, parseInt(val)||1);
+  c.locales = ensureLocales(c);
+  // Re-renderizar pestaña Ficha Google
+  renderFichaTab(1, c);
+  // Re-renderizar info general para actualizar badge y lista
+  renderFichaTab(0, c);
+}
+
+// Resumen agregado de estado de locales para vistas externas
+function aggLocales(c, field){
+  const locs = ensureLocales(c);
+  const counts = {correcto:0, no_match:0, pendiente:0};
+  locs.forEach(l => counts[l[field]=(l[field]||'pendiente')] = (counts[l[field]]||0)+1);
+  const parts = [];
+  if(counts.correcto)  parts.push(`<span style="color:var(--green)">✅${counts.correcto}</span>`);
+  if(counts.no_match)  parts.push(`<span style="color:var(--red)">❌${counts.no_match}</span>`);
+  if(counts.pendiente) parts.push(`<span style="color:var(--yellow)">⏳${counts.pendiente}</span>`);
+  return parts.join(' ');
+}
+
+function checkValidacionTecnica(){
+  const estado = document.getElementById('f-estado')?.value;
+  const mod1   = document.getElementById('f-mod1')?.checked;
+  const mod2   = document.getElementById('f-mod2')?.checked;
+  const warn   = document.getElementById('val-tecnica-warn');
+  if(warn) warn.style.display = (estado==='validacion_bot' && !mod1 && !mod2) ? 'block' : 'none';
+}
+
+function toggleCanalDetalle(prefix){
+  const sel = document.getElementById(prefix+'-canal');
+  const det = document.getElementById(prefix+'-canal-detalle');
+  if(!sel||!det) return;
+  det.style.display = sel.value==='otro' ? 'block' : 'none';
+  if(sel.value!=='otro') det.value='';
+}
+
+function fmtCanal(c){
+  const base = CANAL_LABELS[c.canal]||c.canal;
+  if(c.canal==='otro' && c.canalDetalle) return '🔗 '+c.canalDetalle;
+  return base;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SEED DATA (demo if empty)
+// ═══════════════════════════════════════════════════════════
+function seedDemoData(){
+  // Solo carga si localStorage está completamente vacío (primera vez o tras borrar caché)
+  if(DB.clientes.length > 0) return;
+  // 22 clientes recuperados del CRM — estado al 08/04/2026 (Chrome Profile 1)
+  const saved = {"clientes": [{"id": 1, "nombre": "MiLi MiLi", "contacto": "Meiyu Ding", "tel": "+56 9 2005 0237", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo2"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Av. Pedro de Valdivia 865, Providencia", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "Providencia: Av. Pedro de Valdivia 865, Providencia | https://www.google.com/maps/place/MiLi+MiLi+Providencia", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "jefe administradora no contesta sobre el servicio AyHungry", "createdAt": "2026-03-20T10:00:00.000Z"}, {"id": 2, "nombre": "Grupo Melting Cook", "contacto": "Nicolas Samsom Madec", "tel": "", "email": "", "estado": "contactado", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo1", "modulo2"], "monedaTipo": "CLP", "monto": "", "cantidadLocales": 33, "locales": [{"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-02-26T10:00:00.000Z"}, {"id": 3, "nombre": "La Diana", "contacto": "Guille Pazos", "tel": "+56 2 2664 9018", "email": "", "estado": "acuerdo_alcanzado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo2"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Arturo Prat 435, Santiago", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "Arturo Prat 435, Santiago | https://www.google.com/maps/place/La+Diana+Restaurante", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-15T10:00:00.000Z"}, {"id": 4, "nombre": "ConCafé", "contacto": "Jesús Marquez", "tel": "+56 9 4039 9220", "email": "", "estado": "acuerdo_alcanzado", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo2"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Miguel Claro 2101, Providencia, Región Metropolitana", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "Reunión de cierre", "fechaProx": "2026-04-07T15:00", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "Bakery to go | Miguel Claro 2101, Providencia | Tel local: +56 9 7131 6022 | https://maps.app.goo.gl/mh6QbTutEdCjTt3f7", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-15T10:00:00.000Z"}, {"id": 5, "nombre": "La Casa de Don Benito", "contacto": "Tatiana Andrea Tello Uribe", "tel": "+56 9 7332 1759", "email": "", "estado": "periodo_prueba", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Lonquén Nte. 19039-19513, Calera de Tango", "botonReserva": "correcto", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 452", "googleUsers": "", "fichaGoogleNota": "Lonquén Nte. 19039-19513, Calera de Tango | https://www.google.com/maps/search/Restaurant+Don+Benito+Lonquen+Santiago", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-10T10:00:00.000Z"}, {"id": 6, "nombre": "From peru", "contacto": "José Ledesma", "tel": "+56 9 4873 8255", "email": "", "estado": "en_proceso_pago", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Av. Apoquindo 7677, Las Condes", "botonReserva": "correcto", "fichaMatch": "correcto"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 453 — solicitud 10 tarjetas NFC", "googleUsers": "", "fichaGoogleNota": "Av. Apoquindo 7677, Las Condes, Santiago | https://www.google.com/maps/search/From+Peru+restaurante+Santiago", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-10T10:00:00.000Z"}, {"id": 7, "nombre": "Paku restaurante", "contacto": "Roberto Diaz Latorre", "tel": "+56 9 6342 6700", "email": "", "estado": "periodo_prueba", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Santa Julia 2, Isla Negra, El Quisco", "botonReserva": "correcto", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "2026-03-10", "notas": "ID AyHungry: 454", "googleUsers": "", "fichaGoogleNota": "Santa Julia 2, Isla Negra, El Quisco | https://paku.cl", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-10T10:00:00.000Z", "canalDetalle": ""}, {"id": 8, "nombre": "Donde la sarita", "contacto": "Ramon Vasquez", "tel": "+56 9 9399 4388", "email": "", "estado": "periodo_prueba", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Caletera Ote. Gral. San Martín 25300, Chicureo, Colina", "botonReserva": "correcto", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 455", "googleUsers": "", "fichaGoogleNota": "Caletera Ote. Gral. San Martín 25300, Chicureo, Colina | https://www.google.com/maps/place/Donde+La+Sarita+Restaurant/@-33.2362619,-70.6961331,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-10T10:00:00.000Z"}, {"id": 9, "nombre": "OFA Gourmet", "contacto": "Carlos Ordenes G", "tel": "+56 9 6501 7249", "email": "", "estado": "periodo_prueba", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "", "botonReserva": "no_match", "fichaMatch": "no_match"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 456", "googleUsers": "", "fichaGoogleNota": "Av. Presidente Kennedy 5601, Las Condes, Santiago", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-10T10:00:00.000Z"}, {"id": 10, "nombre": "Duploz Pizzeria", "contacto": "Nicolas Duploz", "tel": "+56 9 6320 7977", "email": "nikolas.papic@gmail.com", "estado": "periodo_prueba", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1", "modulo2"], "monedaTipo": "UF", "monto": "5.0", "cantidadLocales": 2, "locales": [{"nombre": "Las Condes", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "Omnium Apoquindo", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 475-476 — Onboarding 01/04", "googleUsers": "", "fichaGoogleNota": "Av. El Bosque Nte. 0226, Las Condes / Apoquindo sector | https://www.google.com/maps/place/Duploz+Pizza+Bowls", "pruebaInicio": "2026-04-01", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-29T10:00:00.000Z"}, {"id": 11, "nombre": "Juan y Medio", "contacto": "Jorge Herrera", "tel": "+56 2 2378 9277", "email": "secretariaprovidencia@juanymedio.cl", "estado": "cliente_activo", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo2"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 5, "locales": [{"nombre": "José Manuel Infante 51, Providencia", "botonReserva": "no_match", "fichaMatch": "correcto"}, {"nombre": "Las Condes", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "Vitacura", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "Ñuñoa", "botonReserva": "pendiente", "fichaMatch": "pendiente"}, {"nombre": "Santiago Centro", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "al_dia", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 460", "googleUsers": "", "fichaGoogleNota": "José Manuel Infante 51, Providencia (local principal) | juanymedio.cl | https://www.google.com/maps/search/Juan+y+Medio+Providencia", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "pago_directo", "enRiesgo": "", "createdAt": "2026-03-26T10:00:00.000Z"}, {"id": 12, "nombre": "ILove BBQ", "contacto": "Alejandro Chacon", "tel": "+56 9 3316 7973", "email": "", "estado": "cliente_activo", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1", "modulo2"], "monedaTipo": "UF", "monto": "2.5", "cantidadLocales": 1, "locales": [{"nombre": "Constitución 151, Providencia", "botonReserva": "correcto", "fichaMatch": "correcto"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "Alejandro Chacon", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "al_dia", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 473", "googleUsers": "", "fichaGoogleNota": "Constitución 151, Providencia | https://www.google.com/maps/place/I+Love+BBQ/@-33.4325771,-70.6347544,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "pago_directo", "enRiesgo": "", "createdAt": "2026-03-28T10:00:00.000Z"}, {"id": 13, "nombre": "El Gaucho y la Nonna", "contacto": "Alejandro Chacon", "tel": "+56 9 3316 7973", "email": "", "estado": "cliente_activo", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1", "modulo2"], "monedaTipo": "UF", "monto": "2.5", "cantidadLocales": 1, "locales": [{"nombre": "Constitución 151, Providencia", "botonReserva": "correcto", "fichaMatch": "correcto"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "Alejandro Chacon", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "al_dia", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 472", "googleUsers": "", "fichaGoogleNota": "Constitución 151, Providencia (mismo edificio que ILove BBQ) | https://www.google.com/maps/place/El+Gaucho+y+La+Nonna/@-33.4325915,-70.6346656,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "pago_directo", "enRiesgo": "", "createdAt": "2026-03-28T10:00:00.000Z"}, {"id": 14, "nombre": "Pizzería Lazzaroni", "contacto": "Christopher Vallefin", "tel": "", "email": "chris.vallefin@gmail.com", "estado": "periodo_prueba", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "0", "cantidadLocales": 1, "locales": [{"nombre": "Av. Sucre 399, Ñuñoa", "botonReserva": "correcto", "fichaMatch": "correcto"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "Christopher Vallefin", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "ID AyHungry: 199 — período gratis", "googleUsers": "", "fichaGoogleNota": "Av. Sucre 399, Ñuñoa | https://www.google.com/maps/place/Pizzer%C3%ADa+Lazzaroni/@-33.4507547,-70.6239918,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-29T10:00:00.000Z"}, {"id": 15, "nombre": "La Resistencia", "contacto": "Daniel Ungar", "tel": "+56 9 7698 9530", "email": "Danielungarp@gmail.com", "estado": "acuerdo_alcanzado", "prioridad": "alta", "canal": "whatsapp", "modulos": ["modulo1", "modulo2"], "monedaTipo": "UF", "monto": "2.5", "cantidadLocales": 1, "locales": [{"nombre": "Av Providencia 2124 Local I, Providencia", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "Presentación AyHungry", "fechaProx": "2026-04-06T12:00", "fechaIni": "", "notas": "Av. 2124 local I, Providencia", "googleUsers": "", "fichaGoogleNota": "Av Providencia 2124 Local I, Providencia | mismo que La Resistencia Cafetería (ID 22)", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-25T10:00:00.000Z"}, {"id": 16, "nombre": "El Rey", "contacto": "Juan Diego Santa Cruz", "tel": "", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "", "cantidadLocales": 1, "locales": [{"nombre": "Nueva de Lyon 99, Providencia", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "Qué es AyHungry? El Rey", "fechaProx": "2026-04-06T12:30", "fechaIni": "", "notas": "meet.google.com/wgn-wvtp-uum", "googleUsers": "", "fichaGoogleNota": "Nueva de Lyon 99, Providencia | https://www.google.com/maps/place/EL+REY/@-33.4208931,-70.6103904,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-28T10:00:00.000Z"}, {"id": 17, "nombre": "Wonder Bar", "contacto": "", "tel": "", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "", "cantidadLocales": 1, "locales": [{"nombre": "Gral. Mackenna 1176, Santiago", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "WonderBar - AyHungry", "fechaProx": "2026-04-06T16:30", "fechaIni": "", "notas": "meet.google.com/tjy-xrth-mgn", "googleUsers": "", "fichaGoogleNota": "Gral. Mackenna 1176, Santiago | https://www.google.com/maps/place/Wonder+Bar/@-33.4332745,-70.6542383,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-30T10:00:00.000Z"}, {"id": 18, "nombre": "La Esquina del Buen Gusto", "contacto": "", "tel": "", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "", "cantidadLocales": 1, "locales": [{"nombre": "", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-28T10:00:00.000Z"}, {"id": 19, "nombre": "El Ancla", "contacto": "", "tel": "+56 9 6122 0801", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "", "cantidadLocales": 1, "locales": [{"nombre": "Sta. Beatriz 191, Providencia", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "Sta. Beatriz 191, Providencia | https://www.google.com/maps/place/El+Ancla+Providencia/@-33.4260057,-70.6186499,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-20T10:00:00.000Z"}, {"id": 20, "nombre": "Café con cuento", "contacto": "", "tel": "+56 2 2335 0599", "email": "", "estado": "contactado", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "", "cantidadLocales": 1, "locales": [{"nombre": "Av. Hernando de Aguirre 195, Providencia", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "", "notas": "", "googleUsers": "", "fichaGoogleNota": "Av. Hernando de Aguirre 195, Providencia | https://www.google.com/maps/place/Caf%C3%A9+con+Cuento/@-33.4201366,-70.6011088,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-25T10:00:00.000Z"}, {"id": 21, "nombre": "El Único Pollo A Las Brasas", "contacto": "", "tel": "+56 2 2635 6996", "email": "", "estado": "en_proceso_pago", "prioridad": "media", "canal": "whatsapp", "modulos": ["modulo1"], "monedaTipo": "UF", "monto": "1.5", "cantidadLocales": 1, "locales": [{"nombre": "Av. Vicuña Mackenna 322, Providencia", "botonReserva": "correcto", "fichaMatch": "pendiente"}], "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "2026-03-15", "notas": "", "googleUsers": "", "fichaGoogleNota": "Av. Vicuña Mackenna 322, Providencia | https://www.google.com/maps/place/El+%C3%9Anico+Pollo+A+Las+Brasas/@-33.4456253,-70.6325531,17z", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "iniciTipo": "prueba", "enRiesgo": "", "createdAt": "2026-03-15T10:00:00.000Z", "canalDetalle": ""}, {"id": 22, "nombre": "La Resistencia Cafetería", "contacto": "Daniel Ungar", "tel": "+56 9 7698 9530", "email": "Danielungarp@gmail.com", "estado": "acuerdo_alcanzado", "prioridad": "media", "canal": "instagram", "canalDetalle": "", "modulos": ["modulo1", "modulo2"], "cantidadLocales": 1, "locales": [{"nombre": "Av Providencia 2124 Local I, Providencia, Chile 7500000", "botonReserva": "pendiente", "fichaMatch": "pendiente"}], "fichaGoogleNota": "Av Providencia 2124 Local I, Providencia, Chile 7500000 | detrás de Drugstore", "iniciTipo": "prueba", "pruebaInicio": "", "pruebaFin": "", "pruebaResultado": "", "rut": "", "direccionFiscal": "", "correoFiscal": "", "nombreFiscal": "", "contactoCierre": "", "monedaTipo": "CLP", "monto": "", "metodoPago": "transferencia", "diaPago": "", "pagoEstado": "pendiente", "proxima": "", "fechaProx": "", "fechaIni": "2026-04-08", "notas": "Cafetería ubicada en providencia atras de Drugstore, abrió hace poco, ", "createdAt": "2026-04-08T13:24:03.420Z", "enRiesgo": ""}], "interacciones": [{"id": 1, "clienteId": 18, "tipo": "reunion", "fecha": "2026-03-31T12:00:00.000Z", "nota": "Qué es AyHungry", "tareaFecha": "", "tareaCompletada": false}, {"id": 2, "clienteId": 10, "tipo": "reunion", "fecha": "2026-04-01T10:00:00.000Z", "nota": "Onboarding Duploz Pizzeria", "tareaFecha": "", "tareaCompletada": false}, {"id": 3, "clienteId": 3, "tipo": "llamada", "fecha": "2026-03-31T11:00:00.000Z", "nota": "solicita llamar en otro horario", "tareaFecha": "", "tareaCompletada": false}, {"id": 4, "clienteId": 2, "tipo": "llamada", "fecha": "2026-03-31T11:00:00.000Z", "nota": "seguimiento reunión", "tareaFecha": "", "tareaCompletada": false}, {"id": 5, "clienteId": 1, "tipo": "llamada", "fecha": "2026-03-31T11:00:00.000Z", "nota": "jefe aún no responde", "tareaFecha": "", "tareaCompletada": false}, {"id": 6, "clienteId": 19, "tipo": "llamada", "fecha": "2026-03-31T11:00:00.000Z", "nota": "sin respuesta", "tareaFecha": "", "tareaCompletada": false}, {"id": 7, "clienteId": 20, "tipo": "whatsapp", "fecha": "2026-03-31T11:00:00.000Z", "nota": "", "tareaFecha": "", "tareaCompletada": false}, {"id": 8, "clienteId": 19, "tipo": "whatsapp", "fecha": "2026-03-31T11:00:00.000Z", "nota": "sin respuesta", "tareaFecha": "", "tareaCompletada": false}, {"id": 9, "clienteId": 6, "tipo": "nota", "fecha": "2026-03-31T11:00:00.000Z", "nota": "solicitud 10 tarjetas NFC", "tareaFecha": "", "tareaCompletada": false}, {"id": 10, "clienteId": 3, "tipo": "llamada", "fecha": "2026-03-15T10:00:00.000Z", "nota": "Primer contacto. Interesado en M1. Ficha Google sin match, hay que corregir.", "tarea": "Revisar y corregir Ficha Google", "tareaFecha": "2026-03-25", "tareaCompletada": false}, {"id": 11, "clienteId": 1, "tipo": "llamada", "fecha": "2026-03-20T10:00:00.000Z", "nota": "Cliente muy satisfecho con el Botón Reservar Mesa. 40 reservas en el mes.", "tarea": "", "tareaFecha": "", "tareaCompletada": false}, {"id": 12, "clienteId": 2, "tipo": "whatsapp", "fecha": "2026-03-22T10:00:00.000Z", "nota": "Confirmó que el botón funciona. Pendiente decidir si continúa.", "tarea": "Llamar para confirmar continuación", "tareaFecha": "2026-03-28", "tareaCompletada": false}], "nextId": 23, "nextIId": 13, "lastView": "kanban"};
+  DB.clientes = saved.clientes || [];
+  DB.interacciones = saved.interacciones || [];
+  if(saved.nextId) DB.nextId = saved.nextId;
+  if(saved.nextIId) DB.nextIId = saved.nextIId;
+  saveDB();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT — carga con fallback a IndexedDB si localStorage está vacío
+// ═══════════════════════════════════════════════════════════
+async function initApp(){
+  // Siempre garantizamos que el CRM cargue aunque falle algo
+  try{
+    let loaded = false;
+
+    // 1. Intentar localStorage (caso normal — sincrónico y siempre disponible)
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        // Solo usar si tiene clientes reales (evita cargar estado vacío/corrupto)
+        if(parsed.clientes && parsed.clientes.length > 0){
+          // Si los datos embebidos en el HTML tienen MÁS clientes que localStorage,
+          // usar los embebidos (fuente de verdad actualizada desde disco)
+          const embeddedCount = (typeof saved !== 'undefined' && saved.clientes) ? saved.clientes.length : 0;
+          if(embeddedCount > parsed.clientes.length){
+            console.warn('localStorage tiene ' + parsed.clientes.length + ' clientes, HTML embebido tiene ' + embeddedCount + ' — usando datos embebidos');
+            DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, saved);
+            saveDB(); // sincronizar localStorage con los datos completos
+          } else {
+            DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, parsed);
+          }
+          loaded = true;
+        } else {
+          console.warn('localStorage tiene datos vacíos — ignorando, usando backup');
+          localStorage.removeItem(STORAGE_KEY); // limpiar estado malo
+        }
+      }
+    }catch(e){ console.warn('localStorage error',e); }
+
+    // 2. Si localStorage vacío → intentar IndexedDB (backup interno)
+    if(!loaded){
+      try{
+        const idbJson = await loadLatestFromIDB();
+        if(idbJson){
+          const parsed = JSON.parse(idbJson);
+          // Solo usar si tiene clientes reales
+          if(parsed.clientes && parsed.clientes.length > 0){
+            DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, parsed);
+            localStorage.setItem(STORAGE_KEY, idbJson);
+            loaded = true;
+            setTimeout(()=>showToast('✅ Datos recuperados desde backup interno ('+DB.clientes.length+' clientes)'),1200);
+          }
+        }
+      }catch(e){ console.warn('IDB recovery error',e); }
+    }
+
+    // 3. Intentar leer AyHungry_CRM_latest.json desde carpeta guardada (sin gesto del usuario si el permiso sigue activo)
+    if(!loaded){
+      try{
+        const handle = await loadDirHandleFromIDB();
+        if(handle){
+          _backupDirHandle = handle;
+          const perm = await handle.queryPermission({mode:'readwrite'});
+          if(perm === 'granted'){
+            const fh = await handle.getFileHandle('AyHungry_CRM_latest.json').catch(()=>null);
+            if(fh){
+              const file = await fh.getFile();
+              const txt  = await file.text();
+              const parsed = JSON.parse(txt);
+              if(parsed.clientes && parsed.clientes.length > 0){
+                // Solo restaurar si tiene al menos los 22 clientes base
+                DB = Object.assign({clientes:[],interacciones:[],nextId:1,nextIId:1,lastView:'dashboard'}, parsed);
+                localStorage.setItem(STORAGE_KEY, txt);
+                loaded = true;
+                setTimeout(()=>showToast('✅ Datos recuperados desde archivo JSON — '+DB.clientes.length+' clientes, '+DB.interacciones.length+' interacciones'),1200);
+              }
+            }
+          } else if(perm === 'prompt'){
+            // Necesita gesto del usuario — marcamos para mostrar banner
+            window._needsFileReconnect = true;
+          }
+        }
+      }catch(e){ console.warn('File JSON recovery error',e); }
+    }
+
+    // 4. Sin datos en ninguna fuente → cargar los 22 clientes base
+    if(!loaded) seedDemoData();
+
+  }catch(e){
+    console.error('initApp error — cargando datos base como fallback',e);
+    if(DB.clientes.length === 0) seedDemoData();
+  }
+
+  // Siempre renderizamos la UI
+  buildNav();
+  showView(DB.lastView||'dashboard');
+
+  // Inicializar backup en segundo plano (no bloquea la UI)
+  try{ initBackupSystem(); }catch(e){ console.warn('backup init error',e); }
+
+  // Mostrar banner de reconexión si hace falta gesto de usuario
+  if(window._needsFileReconnect) showReconnectBanner();
+}
+
+initApp();
+</script>
+</body>
+</html>
