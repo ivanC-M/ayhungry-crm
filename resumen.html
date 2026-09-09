@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AyHungry CRM — Resumen Ejecutivo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <p><a href="portfolio.html">&larr; Volver al portafolio</a></p>
+    <h1>Resumen Ejecutivo</h1>
+    <div id="content"></div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const { escapeHtml, apiFetch } = window.AyHungryCRM;
+
+    function formatCurrencyTotals(totals) {
+      const parts = [];
+      if (totals.CLP) parts.push(`$${totals.CLP.toLocaleString('es-CL')} CLP`);
+      if (totals.UF) parts.push(`${totals.UF.toLocaleString('es-CL')} UF`);
+      return parts.length ? parts.join(' + ') : 'Sin contratos firmados';
+    }
+
+    function renderCounts(title, counts) {
+      const rows = Object.entries(counts)
+        .map(([label, count]) => `<tr><th>${escapeHtml(label)}</th><td>${count}</td></tr>`)
+        .join('');
+      return `<div class="panel" style="margin-bottom:16px;"><h2 style="font-size:15px;">${title}</h2><table>${rows}</table></div>`;
+    }
+
+    apiFetch('/api/summary').then((summary) => {
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <div class="panel" style="margin-bottom:16px;">
+          <h2 style="font-size:15px;">MRR</h2>
+          <p style="font-size:22px; font-weight:700;">${formatCurrencyTotals(summary.mrr)}</p>
+        </div>
+        ${renderCounts('Pipeline por etapa', summary.pipelinePorEtapa)}
+        ${renderCounts('Distribución por Tier', summary.distribucionPorTier)}
+        <div class="panel" style="margin-bottom:16px;">
+          <h2 style="font-size:15px;">Clientes en riesgo</h2>
+          <p style="font-size:22px; font-weight:700;">${summary.enRiesgo}</p>
+        </div>
+        <div class="panel" style="margin-bottom:16px;">
+          <h2 style="font-size:15px;">Conversión leads → clientes</h2>
+          <p style="font-size:22px; font-weight:700;">${(summary.conversion * 100).toFixed(1)}%</p>
+        </div>
+        ${summary.churn.total > 0 ? renderCounts(`Churn (${summary.churn.total} total)`, summary.churn.byMotivo)
+          : '<div class="panel"><h2 style="font-size:15px;">Churn</h2><p class="empty-state">Sin registros de churn todavía.</p></div>'}
+      `;
+    });
+  </script>
+</body>
+</html>
