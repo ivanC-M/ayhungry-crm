@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AyHungry CRM — Ficha Cliente</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <p><a href="portfolio.html">&larr; Volver al portafolio</a></p>
+    <div class="client-header" id="header"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="panels"></div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const { escapeHtml, apiFetch } = window.AyHungryCRM;
+
+    const TAB_LABELS = {
+      infoGeneral: 'Info General',
+      fichaGoogle: 'Ficha Google',
+      pruebaPago: 'Prueba / Pago',
+      facturacion: 'Facturación',
+      historial: 'Historial',
+    };
+
+    function renderHeader(header) {
+      document.getElementById('header').innerHTML = `
+        <div><div class="label">Nombre</div><div class="value">${escapeHtml(header.nombre)}</div></div>
+        <div><div class="label">Contacto principal</div><div class="value">${escapeHtml(header.contactoPrincipal) || '—'}</div></div>
+        <div><div class="label">Etapa</div><div class="value">${escapeHtml(header.etapa)}</div></div>
+        <div><div class="label">Próxima acción</div><div class="value">${escapeHtml(header.proximoSeguimiento) || 'Sin fecha'}</div></div>
+      `;
+    }
+
+    function renderFields(obj) {
+      if (obj.sinDatos) return '<p class="empty-state">Sin datos.</p>';
+      const rows = Object.entries(obj)
+        .filter(([key]) => key !== 'sinDatos')
+        .map(([key, value]) => {
+          const display = Array.isArray(value) ? value.join(', ') : value;
+          return `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(display) || '—'}</td></tr>`;
+        })
+        .join('');
+      return `<table>${rows}</table>`;
+    }
+
+    function renderTabs(tabs) {
+      const tabsEl = document.getElementById('tabs');
+      const panelsEl = document.getElementById('panels');
+      const keys = Object.keys(TAB_LABELS);
+
+      tabsEl.innerHTML = keys
+        .map((key, i) => `<button class="tab-button${i === 0 ? ' active' : ''}" data-tab="${key}">${TAB_LABELS[key]}</button>`)
+        .join('');
+      panelsEl.innerHTML = keys
+        .map((key, i) => `<div class="tab-panel${i === 0 ? ' active' : ''}" data-panel="${key}">${renderFields(tabs[key])}</div>`)
+        .join('');
+
+      tabsEl.querySelectorAll('.tab-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          tabsEl.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
+          panelsEl.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+          button.classList.add('active');
+          panelsEl.querySelector(`[data-panel="${button.dataset.tab}"]`).classList.add('active');
+        });
+      });
+    }
+
+    const id = new URLSearchParams(window.location.search).get('id');
+    apiFetch(`/api/client?id=${encodeURIComponent(id)}`).then(({ header, tabs }) => {
+      renderHeader(header);
+      renderTabs(tabs);
+    });
+  </script>
+</body>
+</html>
