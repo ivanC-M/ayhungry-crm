@@ -19,8 +19,12 @@ Hoy el flujo comercial de AyHungry vive en tres piezas (ver memoria `reference_a
 ## Arquitectura
 
 - **Frontend**: el HTML actual, evolucionado a las 3 vistas descritas abajo. Se sirve desde GitHub Pages o se migra a Vercel (recomendado, ver abajo) junto con el backend.
-- **Backend**: funciones serverless en **Vercel** (recomendado sobre Cloudflare Workers o un servidor persistente en Railway/Render) — gratis en el tier básico, mismo repo/deploy que el frontend, sin servidor que mantener. Actúan como proxy autenticado hacia la API de Notion: el token de integración vive como variable de entorno en Vercel, nunca en el HTML público.
-- **Datos**: sin base de datos propia. Cada vista consulta la API de Notion en vivo (con caché corto de ~60s en el backend para no golpear rate limits al reordenar/filtrar en el cliente).
+- **Backend**: funciones serverless en **Vercel** (recomendado sobre Cloudflare Workers o un servidor persistente en Railway/Render) — gratis en el tier básico, mismo repo/deploy que el frontend, sin servidor que mantener.
+- **Datos — cambio de diseño (2026-09-09, durante la implementación):** el plan original era que el backend llamara a la API de Notion en vivo con un token de integración. Al ejecutarlo se descubrió que el workspace de Notion de AyHungry bloquea, a nivel de política, que alguien sin rol Owner cree **o conecte** cualquier integración/token a una página (se probó token de integración, token de acceso personal, y el campo de invitar de "Compartir" — los tres bloqueados). Iván no tiene ese rol.
+
+  **Solución adoptada:** en vez de leer Notion en vivo, una rutina cloud programada (`Export Snapshot Control Tower — Dashboard AyHungry`, corre todos los días a las 18:00 Chile) usa el conector de Notion ya autorizado en la cuenta de Iván (el mismo que usa esta sesión de Claude) para exportar **todas** las filas del Control Tower a `data/control-tower-snapshot.json`, y hace commit + push directo a `main`. Los 3 endpoints (`/api/portfolio`, `/api/client`, `/api/summary`) leen ese archivo del propio deploy en vez de llamar a la API de Notion — `lib/notion-client.js` y `lib/notion-map.js` quedan en el repo pero sin uso en producción (se reactivarían si en el futuro se consigue el permiso de Owner).
+
+  **Consecuencia:** el dashboard ya no es "en vivo" sino "tan fresco como el último export" (máximo ~24h de desfase). Cada push del snapshot dispara un redeploy automático en Vercel.
 - **Acceso**: password simple + cookie de sesión firmada, solo para Iván. Sin multi-usuario en v1.
 
 ## Vista 1 — Portafolio (pantalla de entrada)
