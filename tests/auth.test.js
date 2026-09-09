@@ -26,3 +26,9 @@ test('malformed or missing tokens are invalid', () => {
   expect(verifySessionToken('secret-1', '')).toBe(false);
   expect(verifySessionToken('secret-1', 'not-a-real-token')).toBe(false);
 });
+
+test('missing or empty secret is invalid', () => {
+  const token = createSessionToken('secret-1');
+  expect(verifySessionToken(undefined, token)).toBe(false);
+  expect(verifySessionToken('', token)).toBe(false);
+});
