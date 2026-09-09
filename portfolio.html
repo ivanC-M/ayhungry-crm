@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AyHungry CRM — Portafolio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <h1>Portafolio</h1>
+    <div style="display:flex; gap:8px; margin-bottom:12px;">
+      <input type="text" id="search" placeholder="Buscar por nombre..." />
+      <select id="filter-etapa"><option value="">Todas las etapas</option></select>
+      <select id="filter-tier">
+        <option value="">Todos los tiers</option>
+        <option value="Tier 1">Tier 1</option>
+        <option value="Tier 2">Tier 2</option>
+        <option value="Tier 3">Tier 3</option>
+      </select>
+    </div>
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>Etapa</th><th>Tier</th><th>Último contacto</th><th>Próximo seguimiento</th>
+            <th>Monto mensual</th><th>En riesgo</th><th>Nombre</th><th>Grupo</th><th>Contacto</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const { escapeHtml, apiFetch } = window.AyHungryCRM;
+    let allRows = [];
+
+    function urgencyBadge(urgencia) {
+      const labels = { overdue: 'Vencido', 'at-risk': 'En riesgo', ok: 'OK' };
+      return `<span class="badge badge-${urgencia}">${labels[urgencia]}</span>`;
+    }
+
+    function formatMonto(monto, moneda) {
+      if (monto === null || monto === undefined) return '—';
+      return `${monto.toLocaleString('es-CL')} ${moneda || ''}`.trim();
+    }
+
+    function render(rows) {
+      const tbody = document.getElementById('rows');
+      tbody.innerHTML = rows
+        .map((r) => `
+          <tr class="urgency-${r.urgencia}">
+            <td>${escapeHtml(r['Etapa'])}</td>
+            <td>${escapeHtml(r['Tier'])}</td>
+            <td>${escapeHtml(r['Ultimo contacto'])}</td>
+            <td>${escapeHtml(r['Proximo seguimiento'])}</td>
+            <td>${formatMonto(r['Monto mensual'], r['Moneda'])}</td>
+            <td>${urgencyBadge(r.urgencia)}</td>
+            <td><a href="client.html?id=${encodeURIComponent(r.id)}">${escapeHtml(r['Nombre'])}</a></td>
+            <td>${escapeHtml(r.grupoNombre)}</td>
+            <td>${escapeHtml(r['Teléfono'])}</td>
+          </tr>
+        `)
+        .join('');
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const etapa = document.getElementById('filter-etapa').value;
+      const tier = document.getElementById('filter-tier').value;
+      const filtered = allRows.filter((r) => {
+        const matchesSearch = !search || (r['Nombre'] || '').toLowerCase().includes(search);
+        const matchesEtapa = !etapa || r['Etapa'] === etapa;
+        const matchesTier = !tier || r['Tier'] === tier;
+        return matchesSearch && matchesEtapa && matchesTier;
+      });
+      render(filtered);
+    }
+
+    function populateEtapaFilter(rows) {
+      const etapas = [...new Set(rows.map((r) => r['Etapa']).filter(Boolean))].sort();
+      const select = document.getElementById('filter-etapa');
+      for (const etapa of etapas) {
+        const option = document.createElement('option');
+        option.value = etapa;
+        option.textContent = etapa;
+        select.appendChild(option);
+      }
+    }
+
+    document.getElementById('search').addEventListener('input', applyFilters);
+    document.getElementById('filter-etapa').addEventListener('change', applyFilters);
+    document.getElementById('filter-tier').addEventListener('change', applyFilters);
+
+    apiFetch('/api/portfolio').then((rows) => {
+      allRows = rows;
+      populateEtapaFilter(rows);
+      render(rows);
+    });
+  </script>
+</body>
+</html>
