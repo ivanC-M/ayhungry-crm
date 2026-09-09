@@ -1,7 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const { isAuthenticated } = require('../lib/require-auth');
-const { getClient, queryAllPages } = require('../lib/notion-client');
-const { mapPageToRecord } = require('../lib/notion-map');
 const { buildSummary } = require('../lib/summary');
+
+const SNAPSHOT_PATH = path.join(__dirname, '..', 'data', 'control-tower-snapshot.json');
 
 module.exports = async function handler(req, res) {
   if (!isAuthenticated(req)) {
@@ -9,9 +11,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const client = getClient();
-  const pages = await queryAllPages(client, process.env.NOTION_DATABASE_ID);
-  const records = pages.map(mapPageToRecord);
+  const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, 'utf8'));
 
-  res.status(200).json(buildSummary(records));
+  res.status(200).json(buildSummary(snapshot.records));
 };

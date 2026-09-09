@@ -1,7 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const { isAuthenticated } = require('../lib/require-auth');
-const { getClient, fetchPage } = require('../lib/notion-client');
-const { mapPageToRecord } = require('../lib/notion-map');
 const { buildClientView } = require('../lib/client-view');
+
+const SNAPSHOT_PATH = path.join(__dirname, '..', 'data', 'control-tower-snapshot.json');
 
 module.exports = async function handler(req, res) {
   if (!isAuthenticated(req)) {
@@ -15,15 +17,16 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const client = getClient();
-  const page = await fetchPage(client, id);
-  const record = mapPageToRecord(page);
+  const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, 'utf8'));
+  const record = snapshot.records.find((r) => r.id === id);
+  if (!record) {
+    res.status(404).json({ error: 'Cliente no encontrado' });
+    return;
+  }
 
-  const groupIds = record['Grupo / Cliente matriz'] || [];
   const relatedNames = {};
-  for (const groupId of groupIds) {
-    const relatedPage = await fetchPage(client, groupId);
-    relatedNames[groupId] = mapPageToRecord(relatedPage)['Nombre'];
+  for (const other of snapshot.records) {
+    relatedNames[other.id] = other['Nombre'];
   }
 
   res.status(200).json(buildClientView(record, relatedNames));
