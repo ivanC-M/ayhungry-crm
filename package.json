@@ -1,0 +1,16 @@
+{
+  "name": "ayhungry-crm-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "vercel": "^37.0.0"
+  }
+}
