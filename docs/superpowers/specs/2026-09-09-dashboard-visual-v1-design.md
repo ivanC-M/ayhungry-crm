@@ -57,12 +57,14 @@ Métricas, ajustadas según auditoría de estándares (un MRR alto con churn alt
 - Conversión leads → clientes (usando `Fecha primer contacto` / `Fecha inicio contrato`).
 - Distribución por Tier.
 - Clientes en riesgo (`En riesgo = true`).
-- **Churn**: requiere el campo nuevo `Fecha de baja` (ver siguiente sección) — sin este campo no se puede calcular de forma confiable, y no se va a aproximar con Tier 3 porque ese tier es un balde genérico para todo lo que no es Tier 1/2, no solo churn (ver `reference_control_tower_notion`).
-- Trayectoria de crecimiento mensual (MRR actual vs. mes anterior, derivado de `Fecha inicio contrato` acumulado menos bajas por `Fecha de baja`).
+- **Churn**: clientes con `Etapa = "Churn"` (distinto de `Etapa = "Perdido"`, que es un lead que nunca cerró). Se cuenta y se lee `Motivo churn` para el desglose. La fecha exacta viene de `Fecha churn` (campo agregado 2026-09-09) — mientras no haya suficientes registros con esa fecha llena, se muestra el conteo total pero no la trayectoria mensual.
+- Trayectoria de crecimiento mensual (MRR actual vs. mes anterior, derivado de `Fecha inicio contrato` acumulado menos bajas por `Fecha churn`) — no se aproxima con Tier 3, que es un balde genérico para todo lo que no es Tier 1/2, no solo churn (ver `reference_control_tower_notion`).
 
-## Cambio requerido en Notion (antes de construir la Vista 3 completa)
+## Campo agregado en Notion (hecho 2026-09-09)
 
-Agregar campo **`Fecha de baja`** (date) al Control Tower — mismo patrón que se usó para agregar `Numero de locales` en agosto 2026. Se llena manualmente cuando un cliente cancela. Sin este campo, la Vista 3 se construye igual pero sin las secciones de churn/trayectoria (se agregan cuando el campo empiece a tener datos).
+Se agregó el campo **`Fecha churn`** (date) al Control Tower — mismo patrón que `Numero de locales` en agosto 2026. Se descubrió al revisar el schema real que Notion ya tenía `Etapa = "Churn"` (opción de pipeline, distinta de `Etapa = "Perdido"`) y un campo `Motivo churn` (distinto de `Motivo perdida`) — o sea ya se distinguía entre "cliente activo que canceló" (Churn) y "lead que no cerró" (Perdido), solo faltaba la fecha. `Fecha churn` se llena manualmente cuando `Etapa` pasa a `Churn`. Mientras no tenga datos históricos, la Vista 3 se construye igual pero las secciones de churn/trayectoria mostrarán "sin datos suficientes".
+
+**Data source ID real de Notion (Control Tower):** `9baa8b5c-203f-4fa8-8742-6b3b87c79318` — usar como `NOTION_DATABASE_ID` en el backend.
 
 ## Fuera de alcance de v1 (v2 futuro)
 
