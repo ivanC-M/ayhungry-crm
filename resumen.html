@@ -4,12 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AyHungry CRM — Resumen Ejecutivo</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%231f2320%22/%3E%3Ctext%20x%3D%2216%22%20y%3D%2222%22%20font-family%3D%22system-ui%2Csans-serif%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3EA%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page">
     <p><a href="portfolio.html">&larr; Volver al portafolio</a></p>
     <h1>Resumen Ejecutivo</h1>
+    <p class="top-nav"><a href="reporte.html">Reporte Semanal</a></p>
+    <div id="error" class="error-banner" style="display:none;" role="alert"></div>
     <div id="content"></div>
   </div>
   <script src="app.js"></script>
@@ -23,33 +26,57 @@
       return parts.length ? parts.join(' + ') : 'Sin contratos firmados';
     }
 
-    function renderCounts(title, counts) {
-      const rows = Object.entries(counts)
-        .map(([label, count]) => `<tr><th>${escapeHtml(label)}</th><td>${count}</td></tr>`)
+    function renderBarList(title, counts) {
+      const entries = Object.entries(counts);
+      const max = Math.max(1, ...entries.map(([, count]) => count));
+      const rows = entries
+        .map(([label, count]) => `
+          <div class="bar-row">
+            <span class="bar-label">${escapeHtml(label)}</span>
+            <span class="bar-track"><span class="bar-fill" style="width:${(count / max) * 100}%"></span></span>
+            <span class="bar-count">${count}</span>
+          </div>
+        `)
         .join('');
-      return `<div class="panel" style="margin-bottom:16px;"><h2 style="font-size:15px;">${title}</h2><table>${rows}</table></div>`;
+      return `<div class="panel"><h2>${title}</h2><div class="bar-list">${rows}</div></div>`;
     }
 
     apiFetch('/api/summary').then((summary) => {
       const content = document.getElementById('content');
+      const enRiesgoClass = summary.enRiesgo > 0 ? 'kpi-tile--warning' : 'kpi-tile--good';
+      const churnClass = summary.churn.total > 0 ? 'kpi-tile--critical' : 'kpi-tile--good';
       content.innerHTML = `
-        <div class="panel" style="margin-bottom:16px;">
-          <h2 style="font-size:15px;">MRR</h2>
-          <p style="font-size:22px; font-weight:700;">${formatCurrencyTotals(summary.mrr)}</p>
+        <div class="panel-stack">
+          <div class="kpi-grid">
+            <div class="kpi-tile hero">
+              <p class="label">MRR</p>
+              <p class="value">${formatCurrencyTotals(summary.mrr)}</p>
+            </div>
+            <div class="kpi-tile ${enRiesgoClass}">
+              <p class="label">Clientes en riesgo</p>
+              <p class="value">${summary.enRiesgo}</p>
+            </div>
+            <div class="kpi-tile">
+              <p class="label">Conversión leads → clientes</p>
+              <p class="value">${(summary.conversion * 100).toFixed(1)}%</p>
+            </div>
+            <div class="kpi-tile ${churnClass}">
+              <p class="label">Churn</p>
+              <p class="value">${summary.churn.total}</p>
+            </div>
+          </div>
+          <div class="summary-columns">
+            ${renderBarList('Pipeline por etapa', summary.pipelinePorEtapa)}
+            ${renderBarList('Distribución por Tier', summary.distribucionPorTier)}
+          </div>
+          ${summary.churn.total > 0 ? renderBarList(`Motivos de churn (${summary.churn.total} total)`, summary.churn.byMotivo)
+            : '<div class="panel"><h2>Churn</h2><p class="empty-state">Sin registros de churn todavía.</p></div>'}
         </div>
-        ${renderCounts('Pipeline por etapa', summary.pipelinePorEtapa)}
-        ${renderCounts('Distribución por Tier', summary.distribucionPorTier)}
-        <div class="panel" style="margin-bottom:16px;">
-          <h2 style="font-size:15px;">Clientes en riesgo</h2>
-          <p style="font-size:22px; font-weight:700;">${summary.enRiesgo}</p>
-        </div>
-        <div class="panel" style="margin-bottom:16px;">
-          <h2 style="font-size:15px;">Conversión leads → clientes</h2>
-          <p style="font-size:22px; font-weight:700;">${(summary.conversion * 100).toFixed(1)}%</p>
-        </div>
-        ${summary.churn.total > 0 ? renderCounts(`Churn (${summary.churn.total} total)`, summary.churn.byMotivo)
-          : '<div class="panel"><h2 style="font-size:15px;">Churn</h2><p class="empty-state">Sin registros de churn todavía.</p></div>'}
       `;
+    }).catch((e) => {
+      const errorEl = document.getElementById('error');
+      errorEl.textContent = 'No se pudo cargar el resumen ejecutivo. Intenta recargar la página.';
+      errorEl.style.display = 'block';
     });
   </script>
 </body>

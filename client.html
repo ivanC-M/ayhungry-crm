@@ -4,13 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AyHungry CRM — Ficha Cliente</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%231f2320%22/%3E%3Ctext%20x%3D%2216%22%20y%3D%2222%22%20font-family%3D%22system-ui%2Csans-serif%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3EA%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page">
     <p><a href="portfolio.html">&larr; Volver al portafolio</a></p>
+    <div id="error" class="error-banner" style="display:none;" role="alert"></div>
     <div class="client-header" id="header"></div>
-    <div class="tabs" id="tabs"></div>
+    <div class="tabs" id="tabs" role="tablist"></div>
     <div id="panels"></div>
   </div>
   <script src="app.js"></script>
@@ -52,27 +54,37 @@
       const keys = Object.keys(TAB_LABELS);
 
       tabsEl.innerHTML = keys
-        .map((key, i) => `<button class="tab-button${i === 0 ? ' active' : ''}" data-tab="${key}">${TAB_LABELS[key]}</button>`)
+        .map((key, i) => `<button class="tab-button${i === 0 ? ' active' : ''}" role="tab" id="tab-${key}" aria-selected="${i === 0}" aria-controls="panel-${key}" data-tab="${key}">${TAB_LABELS[key]}</button>`)
         .join('');
       panelsEl.innerHTML = keys
-        .map((key, i) => `<div class="tab-panel${i === 0 ? ' active' : ''}" data-panel="${key}">${renderFields(tabs[key])}</div>`)
+        .map((key, i) => `<div class="tab-panel${i === 0 ? ' active' : ''}" role="tabpanel" id="panel-${key}" aria-labelledby="tab-${key}" data-panel="${key}">${renderFields(tabs[key])}</div>`)
         .join('');
 
       tabsEl.querySelectorAll('.tab-button').forEach((button) => {
         button.addEventListener('click', () => {
-          tabsEl.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
+          tabsEl.querySelectorAll('.tab-button').forEach((b) => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
           panelsEl.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
           button.classList.add('active');
+          button.setAttribute('aria-selected', 'true');
           panelsEl.querySelector(`[data-panel="${button.dataset.tab}"]`).classList.add('active');
         });
       });
     }
 
     const id = new URLSearchParams(window.location.search).get('id');
-    apiFetch(`/api/client?id=${encodeURIComponent(id)}`).then(({ header, tabs }) => {
-      renderHeader(header);
-      renderTabs(tabs);
-    });
+    apiFetch(`/api/client?id=${encodeURIComponent(id)}`)
+      .then(({ header, tabs }) => {
+        renderHeader(header);
+        renderTabs(tabs);
+      })
+      .catch((e) => {
+        const errorEl = document.getElementById('error');
+        errorEl.textContent = 'No se pudo cargar la ficha del cliente. Intenta recargar la página.';
+        errorEl.style.display = 'block';
+      });
   </script>
 </body>
 </html>

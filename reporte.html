@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AyHungry CRM — Reporte Semanal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%231f2320%22/%3E%3Ctext%20x%3D%2216%22%20y%3D%2222%22%20font-family%3D%22system-ui%2Csans-serif%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <p><a href="portfolio.html">&larr; Volver al portafolio</a></p>
+    <h1>Reporte Semanal</h1>
+    <p class="top-nav"><a href="resumen.html">Resumen Ejecutivo</a></p>
+    <div id="error" class="error-banner" style="display:none;" role="alert"></div>
+    <div id="content"></div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const { escapeHtml, apiFetch } = window.AyHungryCRM;
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' });
+    }
+
+    function changeList(items, showArrow) {
+      if (items.length === 0) return '<p class="empty-state">Sin cambios en este período.</p>';
+      return `<div class="change-list">${items
+        .map(
+          (c) => `
+        <div class="change-row">
+          <span class="change-name">${escapeHtml(c.nombre)}</span>
+          <span class="change-path">${escapeHtml(c.etapaAntes || 'Sin etapa')}${
+            showArrow && c.etapaAhora ? ` → ${escapeHtml(c.etapaAhora)}` : ''
+          }</span>
+        </div>`
+        )
+        .join('')}</div>`;
+    }
+
+    function chipList(names) {
+      if (names.length === 0) return '<p class="empty-state">Nadie contactado en este período.</p>';
+      return `<div class="chip-list">${names.map((n) => `<span class="chip">${escapeHtml(n)}</span>`).join('')}</div>`;
+    }
+
+    apiFetch('/api/weekly')
+      .then((data) => {
+        const content = document.getElementById('content');
+
+        if (!data.available) {
+          content.innerHTML =
+            '<div class="panel"><p class="empty-state">Todavía no hay un snapshot anterior para comparar — vuelve en unos días, apenas se acumule más historial.</p></div>';
+          return;
+        }
+
+        const rangeText = `Del ${formatDate(data.previousGeneratedAt)} al ${formatDate(data.currentGeneratedAt)} (${data.windowDays} día${data.windowDays === 1 ? '' : 's'})`;
+
+        content.innerHTML = `
+          <p class="report-meta">${rangeText}</p>
+          <div class="panel-stack">
+            <div class="kpi-grid">
+              <div class="kpi-tile ${data.cierres.count > 0 ? 'kpi-tile--good' : ''}">
+                <p class="label">Cierres</p>
+                <p class="value">${data.cierres.count}</p>
+              </div>
+              <div class="kpi-tile">
+                <p class="label">Avance de pipeline</p>
+                <p class="value">${data.avance.count}</p>
+              </div>
+              <div class="kpi-tile">
+                <p class="label">Contactados por WhatsApp</p>
+                <p class="value">${data.contactadosWhatsapp.count}</p>
+              </div>
+              <div class="kpi-tile">
+                <p class="label">Nuevos leads</p>
+                <p class="value">${data.nuevosLeads.count}</p>
+              </div>
+              <div class="kpi-tile ${data.churnNuevo.count > 0 ? 'kpi-tile--critical' : 'kpi-tile--good'}">
+                <p class="label">Churn nuevo</p>
+                <p class="value">${data.churnNuevo.count}</p>
+              </div>
+              <div class="kpi-tile ${data.perdidosNuevo.count > 0 ? 'kpi-tile--warning' : 'kpi-tile--good'}">
+                <p class="label">Perdidos nuevo</p>
+                <p class="value">${data.perdidosNuevo.count}</p>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Cierres</h2>
+              ${changeList(data.cierres.clientes, false)}
+            </div>
+            <div class="panel">
+              <h2>Avance de pipeline</h2>
+              ${changeList(data.avance.clientes, true)}
+            </div>
+            <div class="panel">
+              <h2>Contactados por WhatsApp</h2>
+              ${chipList(data.contactadosWhatsapp.clientes)}
+            </div>
+            ${
+              data.churnNuevo.count > 0
+                ? `<div class="panel"><h2>Churn nuevo</h2>${changeList(data.churnNuevo.clientes, false)}</div>`
+                : ''
+            }
+            ${
+              data.perdidosNuevo.count > 0
+                ? `<div class="panel"><h2>Perdidos nuevo</h2>${changeList(data.perdidosNuevo.clientes, false)}</div>`
+                : ''
+            }
+          </div>
+        `;
+      })
+      .catch((e) => {
+        const errorEl = document.getElementById('error');
+        errorEl.textContent = 'No se pudo cargar el reporte semanal. Intenta recargar la página.';
+        errorEl.style.display = 'block';
+      });
+  </script>
+</body>
+</html>
