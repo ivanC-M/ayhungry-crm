@@ -12,6 +12,7 @@
     <h1>Portafolio</h1>
     <p class="top-nav"><a href="resumen.html">Resumen Ejecutivo</a> · <a href="reporte.html">Reporte Semanal</a></p>
     <div id="error" class="error-banner" style="display:none;" role="alert"></div>
+    <div class="kpi-grid" id="stats" style="margin-bottom:16px;"></div>
     <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
       <label class="visually-hidden" for="search">Buscar por nombre</label>
       <input type="text" id="search" placeholder="Buscar por nombre..." />
@@ -54,7 +55,28 @@
       return `${monto.toLocaleString('es-CL')} ${moneda || ''}`.trim();
     }
 
+    function renderStats(rows) {
+      const statsEl = document.getElementById('stats');
+      const vencidos = rows.filter((r) => r.urgencia === 'overdue').length;
+      const enRiesgo = rows.filter((r) => r.urgencia === 'at-risk').length;
+      statsEl.innerHTML = `
+        <div class="kpi-tile">
+          <p class="label">Clientes</p>
+          <p class="value">${rows.length}</p>
+        </div>
+        <div class="kpi-tile ${vencidos > 0 ? 'kpi-tile--critical' : 'kpi-tile--good'}">
+          <p class="label">Vencidos</p>
+          <p class="value">${vencidos}</p>
+        </div>
+        <div class="kpi-tile ${enRiesgo > 0 ? 'kpi-tile--warning' : 'kpi-tile--good'}">
+          <p class="label">En riesgo</p>
+          <p class="value">${enRiesgo}</p>
+        </div>
+      `;
+    }
+
     function render(rows) {
+      renderStats(rows);
       const tbody = document.getElementById('rows');
       if (rows.length === 0) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Sin resultados para este filtro.</td></tr>';
